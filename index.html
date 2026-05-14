@@ -154,17 +154,12 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 <div class="scr" id="scr-ai">
   <div class="sec-title">AI 문화유산 해설</div>
   <div class="ai-box">
-    <select class="ai-sel" id="ai-sel"><option value="">— 유산을 선택하세요 —</option></select>
+    <select class="ai-sel" id="ai-sel" onchange="showPlaceDesc()"><option value="">— 유산을 선택하세요 —</option></select>
     <div class="ai-row">
       <input class="ai-inp" id="ai-inp" placeholder="궁금한 점을 물어보세요..."/>
-      <button class="ai-go" id="ai-go-btn" onclick="askAI()">물어보기</button>
+      <button class="ai-go" id="ai-go-btn" onclick="askAI()">설명 보기</button>
     </div>
-    <div class="quick-row">
-      <button class="qb" onclick="setq('왜 중요한가요?')">왜 중요해요?</button>
-      <button class="qb" onclick="setq('쉽게 설명해 주세요')">쉽게 설명해줘</button>
-      <button class="qb" onclick="setq('관람 꿀팁 알려줘')">관람 꿀팁</button>
-      <button class="qb" onclick="setq('비슷한 유산 추천해줘')">비슷한 유산</button>
-    </div>
+
     <div class="ai-result">
       <div class="ai-out" id="ai-out"><span style="color:var(--text3);font-size:17px;">유산을 고르고 물어보시면<br>쉽게 설명해 드려요 😊</span></div>
       <button class="ai-speak-btn" id="speak-btn" onclick="speakResult()" style="display:none"><i class="ti ti-volume"></i> 음성으로 듣기</button>
@@ -208,7 +203,6 @@ const firebaseConfig = {
   appId: "1:296404787285:web:c74428a3d47922d60834dc",
   measurementId: "G-YHXR4HLN84"
 };
-const GEMINI_KEY = "AIzaSyCHQOJjNOejRR3itwj8egVJ7ptLu5-I1CM"; // ← 여기에 Gemini API 키 입력
 const CLOUDINARY_NAME = "dpwwihent";
 const CLOUDINARY_PRESET = "ksjieunho";
 const DB_DOC = "shared/data";
@@ -218,48 +212,48 @@ const db = getFirestore(app);
 
 // ── 장소 데이터 ──────────────────────────────────────────
 const PLACES = [
-  {id:1,name:'담양 소쇄원',region:'담양',dist:26,time:'35분',emoji:'🍃',area:'전남',tags:['정원','조선'],desc:'조선 선비의 이상향을 담은 아름다운 전통 원림.'},
-  {id:2,name:'화순 고인돌 유적',region:'화순',dist:32,time:'45분',emoji:'🪨',area:'전남',tags:['세계유산','선사'],desc:'유네스코 세계문화유산. 청동기 시대 대규모 고인돌 밀집 지역.'},
-  {id:3,name:'나주 국립박물관',region:'나주',dist:38,time:'50분',emoji:'🏛️',area:'전남',tags:['박물관','마한'],desc:'영산강 유역 마한·백제 유물의 보고. 나주 금동관 등 국보급 유물 다수.'},
-  {id:4,name:'장성 필암서원',region:'장성',dist:45,time:'55분',emoji:'📖',area:'전남',tags:['세계유산','서원'],desc:'유네스코 등재 한국의 서원. 조선 중기 성리학의 산실.'},
-  {id:5,name:'고창 고인돌 유적',region:'고창',dist:58,time:'1시간',emoji:'🗿',area:'전북',tags:['세계유산','선사'],desc:'유네스코 세계문화유산. 440여 기 고인돌이 밀집한 세계 최대 규모.'},
-  {id:6,name:'고창 선운사',region:'고창',dist:72,time:'1시간 10분',emoji:'🌸',area:'전북',tags:['고찰','동백'],desc:'서해안 최고의 고찰. 봄 동백과 가을 꽃무릇이 아름다운 천년 사찰.'},
-  {id:7,name:'강진 다산초당',region:'강진',dist:74,time:'1시간 10분',emoji:'📚',area:'전남',tags:['정약용','조선'],desc:'다산 정약용이 유배 중 목민심서를 집필한 곳.'},
-  {id:8,name:'순천 선암사',region:'순천',dist:79,time:'1시간 20분',emoji:'🪷',area:'전남',tags:['세계유산','산사'],desc:'유네스코 등재 산사. 천 년 넘는 역사의 아름다운 사찰. 봄 매화가 유명.'},
-  {id:9,name:'순천만 국가정원',region:'순천',dist:83,time:'1시간 25분',emoji:'🌿',area:'전남',tags:['자연','갯벌','세계유산'],desc:'유네스코 습지 보호 구역. 드넓은 갈대밭과 철새들의 낙원.'},
-  {id:10,name:'정읍 무성서원',region:'정읍',dist:85,time:'1시간 25분',emoji:'📜',area:'전북',tags:['세계유산','서원'],desc:'유네스코 등재 한국의 서원. 최치원을 기리는 유서 깊은 서원.'},
-  {id:11,name:'익산 미륵사지',region:'익산',dist:95,time:'1시간 30분',emoji:'🏰',area:'전북',tags:['세계유산','백제'],desc:'유네스코 세계문화유산. 백제 최대 사찰 터. 동양 최대 석탑 소재지.'},
-  {id:12,name:'익산 왕궁리 유적',region:'익산',dist:97,time:'1시간 35분',emoji:'👑',area:'전북',tags:['세계유산','백제'],desc:'유네스코 세계문화유산 백제역사유적지구. 백제 왕궁의 흔적.'},
-  {id:13,name:'해남 대흥사',region:'해남',dist:98,time:'1시간 30분',emoji:'🪷',area:'전남',tags:['세계유산','산사'],desc:'유네스코 등재 산사. 두륜산 자락의 천년 고찰.'},
-  {id:14,name:'여수 진남관',region:'여수',dist:99,time:'1시간 35분',emoji:'⚓',area:'전남',tags:['이순신','임진왜란'],desc:'이순신 장군이 지휘한 전라좌수영 본영. 국내 최대 규모 단일 객사 건물.'},
-  {id:15,name:'남원 광한루원',region:'남원',dist:100,time:'1시간 35분',emoji:'🌙',area:'전북',tags:['춘향전','조선','정원'],desc:'춘향전의 배경. 조선 대표 누정 건축 광한루가 있는 아름다운 정원.'},
-  {id:16,name:'하동 쌍계사',region:'하동',dist:108,time:'1시간 40분',emoji:'🍵',area:'경남',tags:['고찰','차문화'],desc:'신라 시대 창건된 천년 고찰. 하동 녹차의 고장.'},
-  {id:17,name:'남해 관음포',region:'남해',dist:132,time:'1시간 45분',emoji:'🌊',area:'경남',tags:['이순신','임진왜란'],desc:'이순신 장군이 최후를 맞이한 노량해전의 현장. 이락사가 있는 역사 유적지.'},
-  {id:18,name:'함양 남계서원',region:'함양',dist:140,time:'1시간 50분',emoji:'🎓',area:'경남',tags:['세계유산','서원'],desc:'유네스코 등재 한국의 서원. 조선 최초 사액서원 중 하나.'},
-  {id:19,name:'합천 해인사',region:'합천',dist:155,time:'2시간',emoji:'🪷',area:'경남',tags:['세계유산','팔만대장경'],desc:'팔만대장경 보관 유네스코 세계문화유산 장경판전. 법보 사찰.'},
-  {id:20,name:'논산 돈암서원',region:'논산',dist:155,time:'2시간',emoji:'🏫',area:'충남',tags:['세계유산','서원'],desc:'유네스코 등재 한국의 서원. 조선 예학의 본거지.'},
-  {id:21,name:'통영 세병관',region:'통영',dist:160,time:'2시간 5분',emoji:'⛵',area:'경남',tags:['이순신','임진왜란'],desc:'이순신 장군의 3도수군통제영 본영. 국내 최대 단층 목조 건물.'},
-  {id:22,name:'공주 무령왕릉',region:'공주',dist:160,time:'2시간 5분',emoji:'🏺',area:'충남',tags:['세계유산','백제'],desc:'유네스코 세계문화유산. 백제 무령왕의 무덤. 금제 관식 등 귀중한 유물.'},
-  {id:23,name:'공주 공산성',region:'공주',dist:162,time:'2시간 5분',emoji:'🧱',area:'충남',tags:['세계유산','백제'],desc:'유네스코 세계문화유산. 백제 웅진 도읍기 왕성.'},
-  {id:24,name:'부여 정림사지',region:'부여',dist:175,time:'2시간 15분',emoji:'🗼',area:'충남',tags:['세계유산','백제'],desc:'유네스코 세계문화유산. 백제의 웅장한 5층 석탑이 천 년을 지키고 있는 곳.'},
-  {id:25,name:'부여 부소산성',region:'부여',dist:177,time:'2시간 20분',emoji:'🌲',area:'충남',tags:['세계유산','백제'],desc:'백제 마지막 도읍 사비의 왕성. 낙화암과 고란사의 슬픈 역사.'},
-  {id:26,name:'김해 대성동 고분군',region:'김해',dist:185,time:'2시간 20분',emoji:'⚱️',area:'경남',tags:['세계유산','가야'],desc:'유네스코 세계문화유산 가야고분군. 금관가야의 중심지.'},
-  {id:27,name:'고령 지산동 고분군',region:'고령',dist:195,time:'2시간 25분',emoji:'⛰️',area:'경북',tags:['세계유산','가야'],desc:'유네스코 세계문화유산 가야고분군. 대가야 왕들이 잠든 거대한 고분군.'},
-  {id:28,name:'경주 역사지구',region:'경주',dist:245,time:'2시간 45분',emoji:'🌅',area:'경북',tags:['세계유산','신라'],desc:'유네스코 세계문화유산. 첨성대·대릉원·안압지 등 신라 유산이 도시 곳곳에.'},
-  {id:29,name:'경주 불국사',region:'경주',dist:247,time:'2시간 45분',emoji:'🛕',area:'경북',tags:['세계유산','신라'],desc:'유네스코 세계문화유산. 신라 불교문화의 정수. 다보탑·석가탑.'},
-  {id:30,name:'경주 석굴암',region:'경주',dist:250,time:'2시간 50분',emoji:'🗿',area:'경북',tags:['세계유산','신라'],desc:'유네스코 세계문화유산. 신라 석조 예술의 최고봉. 본존불의 신비로운 미소.'},
-  {id:31,name:'경주 양동마을',region:'경주',dist:260,time:'2시간 55분',emoji:'🏘️',area:'경북',tags:['세계유산','마을','조선'],desc:'유네스코 세계문화유산. 500년 전통의 살아있는 조선 마을.'},
-  {id:32,name:'안동 하회마을',region:'안동',dist:252,time:'2시간 50분',emoji:'🎭',area:'경북',tags:['세계유산','마을','탈춤'],desc:'유네스코 세계문화유산. 풍산 류씨 집성촌. 하회별신굿탈놀이.'},
-  {id:33,name:'안동 도산서원',region:'안동',dist:258,time:'2시간 55분',emoji:'🎓',area:'경북',tags:['세계유산','이황','서원'],desc:'유네스코 등재. 퇴계 이황 선생이 세운 조선 최고의 학문 도량.'},
-  {id:34,name:'안동 병산서원',region:'안동',dist:260,time:'2시간 55분',emoji:'🏞️',area:'경북',tags:['세계유산','서원'],desc:'유네스코 등재. 낙동강을 굽어보는 아름다운 경관이 일품.'},
-  {id:35,name:'수원 화성',region:'수원',dist:320,time:'3시간 20분',emoji:'🏯',area:'경기',tags:['세계유산','정조','조선'],desc:'유네스코 세계문화유산. 정조의 꿈이 담긴 조선 최고의 성곽 건축.'},
-  {id:36,name:'남한산성',region:'광주(경기)',dist:330,time:'3시간 30분',emoji:'🌄',area:'경기',tags:['세계유산','조선'],desc:'유네스코 세계문화유산. 병자호란 당시 인조가 항전했던 산성 도시.'},
-  {id:37,name:'경복궁',region:'서울',dist:340,time:'3시간 40분',emoji:'🏯',area:'서울',tags:['궁궐','조선'],desc:'조선 왕조 정궁. 근정전·경회루 등 조선 건축의 정수.'},
-  {id:38,name:'창덕궁',region:'서울',dist:341,time:'3시간 40분',emoji:'🌿',area:'서울',tags:['세계유산','궁궐'],desc:'유네스코 세계문화유산. 자연과 어우러진 아름다운 후원이 백미.'},
-  {id:39,name:'종묘',region:'서울',dist:340,time:'3시간 40분',emoji:'🎋',area:'서울',tags:['세계유산','조선'],desc:'유네스코 세계문화유산. 조선 왕과 왕비의 신위를 모신 제례 공간.'},
-  {id:40,name:'조선왕릉(동구릉)',region:'구리',dist:350,time:'3시간 45분',emoji:'🌲',area:'경기',tags:['세계유산','왕릉'],desc:'유네스코 세계문화유산. 태조 이성계를 포함한 9기의 왕릉.'},
-  {id:41,name:'제주 성산일출봉',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🌋',area:'제주',tags:['세계유산','자연'],desc:'유네스코 세계자연유산. 수성화산이 빚어낸 제주의 대표 절경.'},
-  {id:42,name:'제주 만장굴',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🕳️',area:'제주',tags:['세계유산','자연','용암동굴'],desc:'유네스코 세계자연유산. 세계 최장 규모의 용암동굴. 거대한 용암석주가 장관.'},
+  {id:1,name:'담양 소쇄원',region:'담양',dist:26,time:'35분',emoji:'🍃',area:'전남',tags:['정원','조선'],desc:'엄마, 여기 소쇄원은 조선시대 선비 양산보가 만든 정원이에요 🍃 자연 그대로의 계곡과 정자가 어우러진 곳인데, 조선 선비들이 꿈꾸던 이상향을 그대로 옮겨놓은 것 같아요. 광주에서 제일 가까운 문화유산이니 부담 없이 다녀오기 딱 좋아요!'},
+  {id:2,name:'화순 고인돌 유적',region:'화순',dist:32,time:'45분',emoji:'🪨',area:'전남',tags:['세계유산','선사'],desc:'아빠, 여기 고인돌은 무려 3000년 전 청동기 시대 사람들이 만든 거예요 🪨 유네스코 세계문화유산으로 지정된 곳인데, 이렇게 큰 돌을 어떻게 옮겼는지 아직도 미스터리래요. 화순 일대에 500여 기가 넘게 있어서 규모에 입이 딱 벌어질 거예요!'},
+  {id:3,name:'나주 국립박물관',region:'나주',dist:38,time:'50분',emoji:'🏛️',area:'전남',tags:['박물관','마한'],desc:'엄마, 나주 국립박물관에는 영산강 유역 마한·백제 사람들의 유물이 가득해요 🏛️ 특히 나주 금동관이 유명한데, 신라 금관 못지않게 아름답고 정교해요. 우리 고장 전남의 오래된 역사를 한눈에 볼 수 있는 곳이에요!'},
+  {id:4,name:'장성 필암서원',region:'장성',dist:45,time:'55분',emoji:'📖',area:'전남',tags:['세계유산','서원'],desc:'아빠, 필암서원은 조선 중기 대학자 하서 김인후 선생을 기리는 곳이에요 📖 유네스코 세계문화유산으로 지정된 한국의 서원 중 하나예요. 단아하고 고즈넉한 분위기가 정말 멋진 곳인데, 장성 가는 길에 들르기 딱 좋아요!'},
+  {id:5,name:'고창 고인돌 유적',region:'고창',dist:58,time:'1시간',emoji:'🗿',area:'전북',tags:['세계유산','선사'],desc:'엄마, 고창 고인돌은 세계에서 고인돌이 제일 많이 모여있는 곳이에요 🗿 440여 기가 한 곳에 모여있는데 유네스코 세계문화유산이에요. 크기도 다양하고 형태도 달라서 구경하는 재미가 있어요. 선운사랑 같이 묶어서 다녀오면 딱이에요!'},
+  {id:6,name:'고창 선운사',region:'고창',dist:72,time:'1시간 10분',emoji:'🌸',area:'전북',tags:['고찰','동백'],desc:'아빠, 선운사는 봄에 동백꽃이 지는 풍경이 정말 장관이에요 🌸 천년이 넘은 고찰인데, 동백나무 숲길을 걸으면서 절까지 올라가는 길이 정말 아름다워요. 가을 꽃무릇 필 때도 온 산이 빨개져서 장관이에요!'},
+  {id:7,name:'강진 다산초당',region:'강진',dist:74,time:'1시간 10분',emoji:'📚',area:'전남',tags:['정약용','조선'],desc:'엄마, 여기가 바로 목민심서를 쓴 다산 정약용 선생이 18년간 유배 생활을 한 곳이에요 📚 억울하게 유배를 왔지만 이곳에서 500여 권의 책을 쓰셨대요. 주변 차밭 풍경도 너무 예쁘니까 꼭 천천히 걸어보세요!'},
+  {id:8,name:'순천 선암사',region:'순천',dist:79,time:'1시간 20분',emoji:'🪷',area:'전남',tags:['세계유산','산사'],desc:'아빠, 선암사는 유네스코 세계문화유산에 등재된 아름다운 산사예요 🪷 봄에 매화가 필 때가 특히 유명한데, 승선교라는 무지개 다리도 정말 예뻐요. 천 년의 세월이 느껴지는 고즈넉한 분위기가 마음을 편안하게 해줄 거예요!'},
+  {id:9,name:'순천만 국가정원',region:'순천',dist:83,time:'1시간 25분',emoji:'🌿',area:'전남',tags:['자연','갯벌','세계유산'],desc:'엄마, 순천만은 유네스코 습지 보호 구역으로 지정된 소중한 자연유산이에요 🌿 갈대밭 사이로 걷다 보면 흑두루미 같은 희귀 철새들도 만날 수 있어요. 국가정원도 함께 있어서 꽃구경하며 하루 종일 즐길 수 있어요!'},
+  {id:10,name:'정읍 무성서원',region:'정읍',dist:85,time:'1시간 25분',emoji:'📜',area:'전북',tags:['세계유산','서원'],desc:'아빠, 무성서원은 신라 말 대학자 최치원 선생을 기리는 서원이에요 📜 유네스코 세계문화유산으로 지정된 한국의 서원 중 하나인데, 조선 시대 지역 선비들의 교육 공간이었어요. 조용하고 아담한 분위기가 마음을 차분하게 해줄 거예요!'},
+  {id:11,name:'익산 미륵사지',region:'익산',dist:95,time:'1시간 30분',emoji:'🏰',area:'전북',tags:['세계유산','백제'],desc:'엄마, 미륵사지는 백제 최대 규모의 사찰 터예요 🏰 동양에서 가장 오래되고 큰 석탑이 있는 곳인데, 유네스코 세계문화유산이에요. 1400년 전 백제 사람들의 웅장한 꿈이 느껴지는 곳이에요. 미륵사지 석탑은 꼭 가까이서 보세요!'},
+  {id:12,name:'익산 왕궁리 유적',region:'익산',dist:97,time:'1시간 35분',emoji:'👑',area:'전북',tags:['세계유산','백제'],desc:'아빠, 왕궁리 유적은 백제 왕궁이 있던 자리예요 👑 유네스코 세계문화유산 백제역사유적지구에 포함된 곳인데, 왕궁터에서 발굴된 유물들이 정말 흥미로워요. 미륵사지랑 가까우니까 같이 묶어서 보면 딱이에요!'},
+  {id:13,name:'해남 대흥사',region:'해남',dist:98,time:'1시간 30분',emoji:'🪷',area:'전남',tags:['세계유산','산사'],desc:'엄마, 대흥사는 두륜산 자락에 자리한 천년 고찰이에요 🪷 유네스코 세계문화유산으로 지정된 한국의 산사 중 하나예요. 임진왜란 때 나라를 구한 서산대사의 유물도 보관돼 있어요. 해남 땅끝마을이랑 같이 묶어서 다녀오면 좋아요!'},
+  {id:14,name:'여수 진남관',region:'여수',dist:99,time:'1시간 35분',emoji:'⚓',area:'전남',tags:['이순신','임진왜란'],desc:'아빠, 진남관은 이순신 장군이 지휘한 전라좌수영의 본영이에요 ⚓ 국내에서 단일 건물로는 가장 큰 규모의 목조 건물인데, 웅장함에 압도될 거예요. 여수 밤바다랑 돌산도 야경도 함께 즐기면 완벽한 하루가 될 거예요!'},
+  {id:15,name:'남원 광한루원',region:'남원',dist:100,time:'1시간 35분',emoji:'🌙',area:'전북',tags:['춘향전','조선','정원'],desc:'엄마, 광한루원은 춘향전의 배경이 된 아름다운 정원이에요 🌙 이몽룡과 성춘향이 처음 만난 광한루가 연못 위에 있어서 정말 낭만적이에요. 봄에 벚꽃이 필 때 특히 예쁜데, 춘향제 기간에 가면 더 재미있어요!'},
+  {id:16,name:'하동 쌍계사',region:'하동',dist:108,time:'1시간 40분',emoji:'🍵',area:'경남',tags:['고찰','차문화'],desc:'아빠, 쌍계사는 신라 시대에 창건된 천년 고찰이에요 🍵 우리나라 녹차의 고장 하동에 있는데, 절까지 가는 십리 벚꽃길이 봄에 정말 장관이에요. 하동 녹차 한 잔 마시며 쉬어가는 여유도 꼭 누려보세요!'},
+  {id:17,name:'남해 관음포',region:'남해',dist:132,time:'1시간 45분',emoji:'🌊',area:'경남',tags:['이순신','임진왜란'],desc:'엄마, 관음포는 이순신 장군이 마지막 노량해전에서 순국하신 역사적인 곳이에요 🌊 장군의 넋을 기리는 이락사가 있고, 바다 풍경도 정말 아름다워요. 나라를 위해 목숨을 바친 장군의 마음이 느껴지는 숙연한 곳이에요.'},
+  {id:18,name:'함양 남계서원',region:'함양',dist:140,time:'1시간 50분',emoji:'🎓',area:'경남',tags:['세계유산','서원'],desc:'아빠, 남계서원은 조선 최초의 사액서원 중 하나예요 🎓 유네스코 세계문화유산으로 지정된 곳으로, 일두 정여창 선생을 기리는 서원이에요. 남강변에 자리 잡은 경치가 정말 빼어나고 조용해서 산책하기 딱 좋아요!'},
+  {id:19,name:'합천 해인사',region:'합천',dist:155,time:'2시간',emoji:'🪷',area:'경남',tags:['세계유산','팔만대장경'],desc:'엄마, 해인사는 팔만대장경을 보관하고 있는 유네스코 세계문화유산이에요 🪷 고려 시대에 몽골 침략을 불교의 힘으로 물리치고자 만든 팔만대장경이 700년이 지난 지금도 완벽하게 보존돼 있어요. 가야산 단풍도 정말 유명하니 가을에 가면 더 좋아요!'},
+  {id:20,name:'논산 돈암서원',region:'논산',dist:155,time:'2시간',emoji:'🏫',area:'충남',tags:['세계유산','서원'],desc:'아빠, 돈암서원은 조선 예학의 본거지예요 🏫 유네스코 세계문화유산으로 지정된 한국의 서원 중 하나인데, 사계 김장생 선생을 기리는 곳이에요. 조선 시대 예절과 학문의 중심지였던 곳이라 역사적 의미가 깊어요!'},
+  {id:21,name:'통영 세병관',region:'통영',dist:160,time:'2시간 5분',emoji:'⛵',area:'경남',tags:['이순신','임진왜란'],desc:'엄마, 세병관은 이순신 장군의 3도수군통제영 본영이에요 ⛵ 국내에서 가장 큰 단층 목조 건물인데, 그 웅장함이 대단해요. 통영 동피랑 벽화마을이랑 케이블카도 가까우니까 통영 여행으로 묶으면 알차요!'},
+  {id:22,name:'공주 무령왕릉',region:'공주',dist:160,time:'2시간 5분',emoji:'🏺',area:'충남',tags:['세계유산','백제'],desc:'아빠, 무령왕릉은 백제 25대 무령왕의 무덤이에요 🏺 유네스코 세계문화유산인데, 발굴 당시 금제 관식·귀걸이 등 4600여 점의 유물이 쏟아져 나왔대요. 국립공주박물관에 가면 그 유물들을 직접 볼 수 있어요!'},
+  {id:23,name:'공주 공산성',region:'공주',dist:162,time:'2시간 5분',emoji:'🧱',area:'충남',tags:['세계유산','백제'],desc:'엄마, 공산성은 백제가 웅진으로 도읍을 옮겼을 때 쌓은 왕성이에요 🧱 유네스코 세계문화유산인데, 금강변 언덕 위에 있어서 전망이 정말 멋져요. 성곽길을 따라 걸으면 백제의 숨결이 느껴지는 것 같아요. 무령왕릉이랑 함께 보면 딱이에요!'},
+  {id:24,name:'부여 정림사지',region:'부여',dist:175,time:'2시간 15분',emoji:'🗼',area:'충남',tags:['세계유산','백제'],desc:'아빠, 정림사지 5층 석탑은 1400년이 지난 지금도 당당하게 서 있어요 🗼 유네스코 세계문화유산인데, 백제 석탑 중에서 가장 아름답고 완성도가 높다고 해요. 고요한 절터에 우뚝 선 석탑을 보면 백제의 찬란했던 문화가 느껴져요!'},
+  {id:25,name:'부여 부소산성',region:'부여',dist:177,time:'2시간 20분',emoji:'🌲',area:'충남',tags:['세계유산','백제'],desc:'엄마, 부소산성은 백제 마지막 도읍 사비의 왕성이에요 🌲 낙화암에서 궁녀들이 백마강으로 몸을 던졌다는 슬픈 이야기가 전해지는 곳이에요. 고란사에서 약수도 마시고 유람선도 타면서 백제의 마지막 이야기를 느껴보세요!'},
+  {id:26,name:'김해 대성동 고분군',region:'김해',dist:185,time:'2시간 20분',emoji:'⚱️',area:'경남',tags:['세계유산','가야'],desc:'아빠, 대성동 고분군은 금관가야 왕들이 잠든 곳이에요 ⚱️ 유네스코 세계문화유산 가야고분군 중 하나인데, 발굴된 철제 갑옷과 금동관이 정말 멋져요. 가야는 신라·백제·고구려만큼 강했지만 잘 알려지지 않은 나라라 더 흥미로워요!'},
+  {id:27,name:'고령 지산동 고분군',region:'고령',dist:195,time:'2시간 25분',emoji:'⛰️',area:'경북',tags:['세계유산','가야'],desc:'엄마, 지산동 고분군은 대가야 왕들의 무덤이에요 ⛰️ 유네스코 세계문화유산으로 산 능선을 따라 200여 기의 거대한 고분이 줄지어 있는 모습이 정말 장관이에요. 고령 대가야 박물관도 함께 들르면 가야 역사를 제대로 이해할 수 있어요!'},
+  {id:28,name:'경주 역사지구',region:'경주',dist:245,time:'2시간 45분',emoji:'🌅',area:'경북',tags:['세계유산','신라'],desc:'아빠, 경주는 도시 전체가 유네스코 세계문화유산이에요 🌅 첨성대·대릉원·안압지·황룡사터까지 신라 천 년의 유산이 도시 곳곳에 살아있어요. 봄 벚꽃 필 때 보문호 주변이 특히 예쁜데, 자전거 타고 돌아보는 것도 추천해요!'},
+  {id:29,name:'경주 불국사',region:'경주',dist:247,time:'2시간 45분',emoji:'🛕',area:'경북',tags:['세계유산','신라'],desc:'엄마, 불국사는 신라 불교문화의 최고 걸작이에요 🛕 유네스코 세계문화유산인데, 다보탑·석가탑·청운교·백운교가 모두 국보예요. 불국사라는 이름처럼 부처님의 나라를 이 땅에 옮겨놓은 것 같은 아름다운 곳이에요!'},
+  {id:30,name:'경주 석굴암',region:'경주',dist:250,time:'2시간 50분',emoji:'🗿',area:'경북',tags:['세계유산','신라'],desc:'아빠, 석굴암 본존불은 신라 장인들의 최고 걸작이에요 🗿 유네스코 세계문화유산인데, 화강암을 깎아 만든 본존불의 미소가 보는 순간 마음이 편안해져요. 불국사에서 버스 타고 10분이면 가니까 꼭 함께 보세요!'},
+  {id:31,name:'경주 양동마을',region:'경주',dist:260,time:'2시간 55분',emoji:'🏘️',area:'경북',tags:['세계유산','마을','조선'],desc:'엄마, 양동마을은 500년 역사의 살아있는 조선 마을이에요 🏘️ 유네스코 세계문화유산인데, 지금도 사람들이 실제로 살고 있어요. 기와집과 초가집이 어우러진 골목길을 걸으면 조선 시대로 타임슬립 한 것 같아요!'},
+  {id:32,name:'안동 하회마을',region:'안동',dist:252,time:'2시간 50분',emoji:'🎭',area:'경북',tags:['세계유산','마을','탈춤'],desc:'아빠, 하회마을은 낙동강이 마을을 S자로 감싸고 도는 아름다운 곳이에요 🎭 유네스코 세계문화유산인데, 하회별신굿탈놀이도 유명해요. 류성룡 선생의 종가인 충효당도 있고, 부용대에서 내려다보는 전망이 정말 일품이에요!'},
+  {id:33,name:'안동 도산서원',region:'안동',dist:258,time:'2시간 55분',emoji:'🎓',area:'경북',tags:['세계유산','이황','서원'],desc:'엄마, 도산서원은 퇴계 이황 선생이 직접 세운 서원이에요 🎓 유네스코 세계문화유산인데, 옛날 천 원짜리 지폐에 그려진 바로 그 곳이에요. 낙동강 상류 풍경과 어우러진 서원의 모습이 정말 고즈넉하고 아름다워요!'},
+  {id:34,name:'안동 병산서원',region:'안동',dist:260,time:'2시간 55분',emoji:'🏞️',area:'경북',tags:['세계유산','서원'],desc:'아빠, 병산서원은 서애 류성룡 선생을 기리는 서원이에요 🏞️ 유네스코 세계문화유산인데, 낙동강과 절벽을 배경으로 한 만대루의 경관이 우리나라에서 가장 아름다운 서원 풍경으로 꼽혀요. 도산서원이랑 같이 묶어서 보면 딱이에요!'},
+  {id:35,name:'수원 화성',region:'수원',dist:320,time:'3시간 20분',emoji:'🏯',area:'경기',tags:['세계유산','정조','조선'],desc:'엄마, 수원 화성은 정조 임금이 아버지 사도세자를 위해 쌓은 성이에요 🏯 유네스코 세계문화유산인데, 동서양의 건축 기술을 합쳐서 만든 조선 최고의 성곽이에요. 화성행궁도 함께 있고, 야간 조명도 멋지니까 저녁에 성곽 걷기도 추천해요!'},
+  {id:36,name:'남한산성',region:'광주(경기)',dist:330,time:'3시간 30분',emoji:'🌄',area:'경기',tags:['세계유산','조선'],desc:'아빠, 남한산성은 병자호란 때 인조 임금이 피신해서 항전한 역사적인 곳이에요 🌄 유네스코 세계문화유산인데, 영화 남한산성의 배경이기도 해요. 성곽 둘레길 트레킹이 유명하고, 서울 시내가 한눈에 보이는 전망도 멋져요!'},
+  {id:37,name:'경복궁',region:'서울',dist:340,time:'3시간 40분',emoji:'🏯',area:'서울',tags:['궁궐','조선'],desc:'엄마, 경복궁은 조선 왕조 500년의 정궁이에요 🏯 근정전·경회루·향원정 등 아름다운 건물들이 가득한데, 수문장 교대식도 꼭 보세요. 바로 옆 국립민속박물관도 함께 들르면 하루가 알차게 꽉 차요!'},
+  {id:38,name:'창덕궁',region:'서울',dist:341,time:'3시간 40분',emoji:'🌿',area:'서울',tags:['세계유산','궁궐'],desc:'아빠, 창덕궁은 유네스코 세계문화유산으로 지정된 아름다운 궁궐이에요 🌿 자연 지형을 살려 지은 후원이 특히 유명한데, 사계절 모두 아름다워요. 후원은 해설사와 함께하는 관람이라 더 알차게 볼 수 있어요. 꼭 사전 예약하고 가세요!'},
+  {id:39,name:'종묘',region:'서울',dist:340,time:'3시간 40분',emoji:'🎋',area:'서울',tags:['세계유산','조선'],desc:'엄마, 종묘는 조선 역대 왕과 왕비의 신위를 모신 유네스코 세계문화유산이에요 🎋 건물 자체는 단순하지만 그 엄숙함과 웅장함이 압도적이에요. 매년 봄가을에 종묘제례와 종묘제례악 공연이 열리는데 볼 수 있으면 정말 특별한 경험이에요!'},
+  {id:40,name:'조선왕릉(동구릉)',region:'구리',dist:350,time:'3시간 45분',emoji:'🌲',area:'경기',tags:['세계유산','왕릉'],desc:'아빠, 동구릉은 태조 이성계를 비롯한 조선 왕 9기의 왕릉이 모인 유네스코 세계문화유산이에요 🌲 울창한 소나무 숲 속에 왕릉들이 자리하고 있어서 산책하기 너무 좋아요. 조선 왕릉은 자연과 건축이 조화를 이뤄 세계적으로도 인정받은 문화유산이에요!'},
+  {id:41,name:'제주 성산일출봉',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🌋',area:'제주',tags:['세계유산','자연'],desc:'엄마, 성산일출봉은 바닷속 화산이 만들어낸 제주의 대표 절경이에요 🌋 유네스코 세계자연유산인데, 일출 명소로 유명해서 해 뜰 때 올라가면 정말 감동적이에요. 우도랑 가까우니까 배 타고 우도까지 같이 들르면 더 알찬 제주 여행이 돼요!'},
+  {id:42,name:'제주 만장굴',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🕳️',area:'제주',tags:['세계유산','자연','용암동굴'],desc:'아빠, 만장굴은 세계에서 가장 긴 용암동굴 중 하나예요 🕳️ 유네스코 세계자연유산인데, 굴 안에 7.6m 높이의 거대한 용암석주가 있어서 입이 딱 벌어져요. 동굴 안은 연중 11도 정도라 여름에 가면 시원하고 겨울에 가면 따뜻해요!'},
 ];
 
 const AREAS = ['전체','전남','전북','경남','경북','충남','경기','서울','제주'];
@@ -622,45 +616,34 @@ window.shareCoupon = function(i) {
   }
 };
 
-// ── AI 해설 (Gemini) ────────────────────────────────────
-window.setq = function(q) {
-  const sel = document.getElementById('ai-sel').value;
-  document.getElementById('ai-inp').value = sel ? `${sel}: ${q}` : q;
-};
-
-window.askAI = async function() {
-  const inp = document.getElementById('ai-inp');
-  const btn = document.getElementById('ai-go-btn');
+// ── AI 해설 (미리 쓴 설명) ──────────────────────────────
+window.showPlaceDesc = function() {
+  const selVal = document.getElementById('ai-sel').value;
   const out = document.getElementById('ai-out');
   const speakBtn = document.getElementById('speak-btn');
-  const sel = document.getElementById('ai-sel').value;
-  let q = inp.value.trim();
-  if (!q) { if (!sel) { showToast('유산을 선택하거나 질문을 입력해 주세요.'); return; } q = `${sel}에 대해 간단히 설명해 줘`; }
-  btn.disabled = true;
-  speakBtn.style.display = 'none';
-  out.innerHTML = '<div><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_KEY}`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        contents: [{parts:[{text:`당신은 딸 은호입니다. 엄마 아빠가 문화유산 답사를 다니실 때 옆에서 설명해드리는 딸의 목소리로 답해주세요. 호칭은 "엄마", "아빠"로 하고, 쉽고 재미있게, 200자 이내로 설명해 주세요. 이모지 1~2개 활용. 예시: "엄마, 여기가 바로 신라 최고의 절이에요!"\n\n질문: ${q}`}]}],
-        generationConfig: {maxOutputTokens:400}
-      })
-    });
-    const data = await res.json();
-    console.log('Gemini 응답:', JSON.stringify(data));
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || data.error?.message || '답변을 가져오지 못했어요. (오류: '+JSON.stringify(data.error)+')';
-
-    lastAIText = text;
-    out.innerHTML = text.replace(/\n/g,'<br>');
+  const place = PLACES.find(p => p.name === selVal);
+  if (place) {
+    lastAIText = place.desc;
+    out.innerHTML = place.desc;
     speakBtn.style.display = 'inline-flex';
-    inp.value = '';
-  } catch(e) {
-    out.innerHTML = '<span style="color:var(--text3);font-size:17px;">잠시 연결이 안 됐어요. 다시 눌러 주세요.</span>';
+  } else {
+    out.innerHTML = '<span style="color:var(--text3);font-size:17px;">유산을 고르면 은호가 설명해드려요 😊</span>';
+    speakBtn.style.display = 'none';
   }
-  btn.disabled = false;
 };
+
+window.askAI = function() {
+  const selVal = document.getElementById('ai-sel').value;
+  const place = PLACES.find(p => p.name === selVal);
+  if (!selVal) { showToast('먼저 유산을 선택해 주세요!'); return; }
+  if (place) {
+    lastAIText = place.desc;
+    document.getElementById('ai-out').innerHTML = place.desc;
+    document.getElementById('speak-btn').style.display = 'inline-flex';
+    document.getElementById('ai-inp').value = '';
+  }
+};
+
 
 // ── TTS 음성 읽기 ──────────────────────────────────────
 window.speakResult = function() {
@@ -681,8 +664,7 @@ window.openAIfor = function(id) {
   go('ai');
   const sel = document.getElementById('ai-sel');
   for (let o of sel.options) { if (o.value===p.name) { sel.value=p.name; break; } }
-  document.getElementById('ai-inp').value = `${p.name}에 대해 쉽게 설명해 주세요`;
-  askAI();
+  showPlaceDesc();
 };
 
 document.getElementById('ai-inp').addEventListener('keydown', e => { if(e.key==='Enter') askAI(); });
