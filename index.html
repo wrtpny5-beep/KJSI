@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#B85C38"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="답사일기"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<title>정심씨와 세일씨의 즐거운 답사일기</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --brand:#B85C38;--brand-light:#FAF0EB;--brand-mid:#E8A07A;
+  --point:#3B6D11;--point-light:#EAF3DE;
+  --gold:#BA7517;--gold-light:#FAEEDA;
+  --bg:#fff;--bg2:#f7f5f3;--bg3:#f0ede9;
+  --text1:#1a1208;--text2:#5c4a38;--text3:#9c8878;
+  --border:#e8e0d8;--radius:14px;--radius-sm:10px;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1a1208;--bg2:#241a10;--bg3:#2e2218;--text1:#f5ede4;--text2:#c8a88c;--text3:#7a6050;--border:#3a2a1a;}
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text1);min-height:100vh;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden;}
+.hdr{background:var(--brand);padding:20px 18px 14px;position:sticky;top:0;z-index:10;}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.hdr-title{font-size:17px;font-weight:700;color:#fff;line-height:1.4;}
+.hdr-sub{font-size:13px;color:#F5C4B3;margin-top:2px;}
+.pt-chip{background:#fff;color:var(--brand);font-size:15px;font-weight:700;border-radius:20px;padding:5px 13px;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;}
+.pt-bar-wrap{margin-top:8px;}
+.pt-bar-label{font-size:13px;color:#F5C4B3;margin-bottom:4px;display:flex;justify-content:space-between;}
+.pt-bar{height:6px;background:rgba(255,255,255,0.25);border-radius:3px;}
+.pt-bar-fill{height:6px;background:#fff;border-radius:3px;transition:width .5s;}
+.nav{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:88px;z-index:9;}
+.nb{flex:1;padding:12px 4px 10px;font-size:12px;color:var(--text3);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:2px solid transparent;font-family:'Noto Sans KR',sans-serif;}
+.nb i{font-size:22px;}
+.nb.on{color:var(--brand);border-bottom-color:var(--brand);}
+.scr{display:none;padding:18px 16px 100px;}
+.scr.on{display:block;}
+.sec-title{font-size:18px;font-weight:700;color:var(--text1);margin-bottom:12px;}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.fb{font-size:13px;padding:6px 13px;border:1px solid var(--border);border-radius:18px;background:none;color:var(--text2);cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.fb.on{background:var(--brand);color:#fff;border-color:var(--brand);}
+.place-card{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;background:var(--bg);}
+.pc-top{display:flex;align-items:stretch;}
+.pc-emoji{width:58px;min-height:76px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--brand-light);flex-shrink:0;}
+.pc-info{flex:1;padding:12px 13px;}
+.pc-name{font-size:18px;font-weight:700;color:var(--text1);line-height:1.25;}
+.pc-meta{font-size:13px;color:var(--text3);margin-top:4px;}
+.pc-tags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+.tag{font-size:12px;background:var(--brand-light);color:#712B13;padding:3px 9px;border-radius:10px;}
+.vtag{font-size:12px;background:var(--point-light);color:#27500A;padding:3px 9px;border-radius:10px;}
+.pc-actions{display:flex;border-top:1px solid var(--border);}
+.pc-btn{flex:1;padding:11px 4px;font-size:13px;color:var(--text2);border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-family:'Noto Sans KR',sans-serif;}
+.pc-btn:not(:last-child){border-right:1px solid var(--border);}
+.pc-btn.done{color:var(--point);font-weight:700;}
+.pc-btn i{font-size:16px;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;}
+.modal{background:var(--bg);border-radius:20px;padding:22px;width:100%;max-width:360px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:19px;font-weight:700;margin-bottom:16px;color:var(--text1);}
+.modal input[type=text],.modal input[type=number]{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:17px;background:var(--bg2);color:var(--text1);outline:none;margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+.modal textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:17px;resize:none;height:80px;background:var(--bg2);color:var(--text1);outline:none;font-family:'Noto Sans KR',sans-serif;}
+.modal-btns{display:flex;gap:9px;margin-top:14px;}
+.btn-cancel{flex:1;padding:13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;font-size:17px;cursor:pointer;color:var(--text2);font-family:'Noto Sans KR',sans-serif;}
+.btn-ok{flex:1;padding:13px;border:none;border-radius:var(--radius-sm);background:var(--brand);color:#fff;font-size:17px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.photo-box{width:100%;height:140px;border:2px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;background:var(--bg2);margin-bottom:12px;position:relative;overflow:hidden;}
+.photo-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.photo-box .ph-label{font-size:14px;color:var(--text3);z-index:1;}
+.photo-box i{font-size:32px;color:var(--text3);z-index:1;}
+.photo-box.has-img i,.photo-box.has-img .ph-label{opacity:0;}
+.pts-big{font-size:44px;font-weight:700;color:var(--brand);line-height:1;}
+.pts-label{font-size:17px;color:var(--text2);margin-top:4px;}
+.pts-next{font-size:15px;color:var(--text2);margin-top:10px;background:var(--bg2);border-radius:var(--radius-sm);padding:10px 13px;}
+.coupon{border:2px dashed var(--gold);border-radius:var(--radius);padding:16px;margin-bottom:11px;background:var(--gold-light);display:flex;align-items:flex-start;gap:13px;}
+.coupon.used{opacity:.4;filter:grayscale(.7);}
+.coupon-icon{font-size:30px;flex-shrink:0;}
+.coupon-name{font-size:18px;font-weight:700;color:#412402;}
+.coupon-desc{font-size:15px;color:#633806;margin-top:3px;white-space:pre-wrap;word-break:break-all;}
+.coupon-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.btn-use{font-size:14px;color:var(--gold);border:1px solid var(--gold);border-radius:10px;padding:5px 12px;background:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-share{font-size:14px;color:var(--brand);border:1px solid var(--brand-mid);border-radius:10px;padding:5px 12px;background:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.log-row{display:flex;gap:11px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.log-ico{font-size:26px;flex-shrink:0;}
+.log-name{font-size:18px;font-weight:700;color:var(--text1);}
+.log-note{font-size:15px;color:var(--text2);margin-top:3px;}
+.log-date{font-size:13px;color:var(--text3);white-space:nowrap;}
+.log-photo{width:100%;max-height:180px;object-fit:cover;border-radius:var(--radius-sm);margin-top:9px;display:block;}
+.comment{background:var(--brand-light);border-radius:var(--radius-sm);padding:9px 11px;margin-top:7px;}
+.comment-who{font-weight:700;color:var(--brand);font-size:13px;margin-bottom:3px;}
+.comment-text{color:#712B13;font-size:15px;}
+.add-comment-btn{font-size:14px;color:var(--brand);border:1px solid var(--brand-mid);border-radius:10px;padding:5px 12px;background:none;cursor:pointer;margin-top:7px;font-family:'Noto Sans KR',sans-serif;}
+.ai-box{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;background:var(--bg);}
+.ai-sel{width:100%;padding:13px 14px;border:none;border-bottom:1px solid var(--border);font-size:17px;background:var(--bg2);color:var(--text1);outline:none;font-family:'Noto Sans KR',sans-serif;}
+.ai-row{display:flex;gap:8px;padding:11px 13px;}
+.ai-inp{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;font-size:17px;background:var(--bg2);color:var(--text1);outline:none;font-family:'Noto Sans KR',sans-serif;}
+.ai-go{background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 15px;font-size:16px;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;}
+.ai-go:disabled{opacity:.5;}
+.ai-result{padding:0 13px 13px;}
+.ai-out{background:var(--bg2);border-radius:var(--radius-sm);padding:14px;font-size:18px;color:var(--text1);line-height:1.8;min-height:60px;}
+.ai-speak-btn{display:inline-flex;align-items:center;gap:5px;font-size:14px;color:var(--brand);border:1px solid var(--brand-mid);border-radius:10px;padding:5px 12px;background:none;cursor:pointer;margin-top:8px;font-family:'Noto Sans KR',sans-serif;}
+.quick-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 13px 11px;}
+.qb{font-size:14px;background:var(--bg2);color:var(--text2);border:1px solid var(--border);border-radius:16px;padding:6px 12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;}
+.stat-card{background:var(--bg2);border-radius:var(--radius-sm);padding:14px;}
+.stat-val{font-size:28px;font-weight:700;color:var(--brand);}
+.stat-lbl{font-size:14px;color:var(--text2);margin-top:3px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--brand);display:inline-block;animation:bop 1s infinite;}
+.dot:nth-child(2){animation-delay:.15s;}.dot:nth-child(3){animation-delay:.3s;}
+@keyframes bop{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1208;color:#fff;padding:11px 20px;border-radius:20px;font-size:15px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.show{opacity:1;}
+.coupon-new-form{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.coupon-new-form label{font-size:15px;color:var(--text2);font-weight:500;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-title">정심씨와 세일씨의 즐거운 답사일기🧡</div>
+      <div class="hdr-sub">은호도 마음으로 함께해요</div>
+    </div>
+    <div class="pt-chip"><i class="ti ti-star"></i><span id="hdr-pt">0</span>pt</div>
+  </div>
+  <div class="pt-bar-wrap">
+    <div class="pt-bar-label"><span>다음 소원쿠폰까지</span><span id="hdr-next-label">50pt 필요</span></div>
+    <div class="pt-bar"><div class="pt-bar-fill" id="hdr-bar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nb on" onclick="go('tour')" id="nb-tour"><i class="ti ti-map-2"></i>코스</button>
+  <button class="nb" onclick="go('ai')" id="nb-ai"><i class="ti ti-sparkles"></i>해설</button>
+  <button class="nb" onclick="go('log')" id="nb-log"><i class="ti ti-book-2"></i>기록</button>
+  <button class="nb" onclick="go('coupon')" id="nb-coupon"><i class="ti ti-ticket"></i>쿠폰</button>
+</nav>
+
+<!-- 코스 -->
+<div class="scr on" id="scr-tour">
+  <div class="sec-title">광주에서 가까운 순 전국 문화유산</div>
+  <div class="filter-row" id="filter-row"></div>
+  <div id="place-list"></div>
+</div>
+
+<!-- AI 해설 -->
+<div class="scr" id="scr-ai">
+  <div class="sec-title">AI 문화유산 해설</div>
+  <div class="ai-box">
+    <select class="ai-sel" id="ai-sel"><option value="">— 유산을 선택하세요 —</option></select>
+    <div class="ai-row">
+      <input class="ai-inp" id="ai-inp" placeholder="궁금한 점을 물어보세요..."/>
+      <button class="ai-go" id="ai-go-btn" onclick="askAI()">물어보기</button>
+    </div>
+    <div class="quick-row">
+      <button class="qb" onclick="setq('왜 중요한가요?')">왜 중요해요?</button>
+      <button class="qb" onclick="setq('쉽게 설명해 주세요')">쉽게 설명해줘</button>
+      <button class="qb" onclick="setq('관람 꿀팁 알려줘')">관람 꿀팁</button>
+      <button class="qb" onclick="setq('비슷한 유산 추천해줘')">비슷한 유산</button>
+    </div>
+    <div class="ai-result">
+      <div class="ai-out" id="ai-out"><span style="color:var(--text3);font-size:17px;">유산을 고르고 물어보시면<br>쉽게 설명해 드려요 😊</span></div>
+      <button class="ai-speak-btn" id="speak-btn" onclick="speakResult()" style="display:none"><i class="ti ti-volume"></i> 음성으로 듣기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 기록 -->
+<div class="scr" id="scr-log">
+  <div class="stat-grid" id="stat-grid"></div>
+  <div class="sec-title">방문 기록</div>
+  <div id="log-list"></div>
+</div>
+
+<!-- 쿠폰 -->
+<div class="scr" id="scr-coupon">
+  <div class="sec-title">포인트 & 소원쿠폰</div>
+  <div style="margin-bottom:20px;">
+    <div class="pts-big" id="pts-big">0</div>
+    <div class="pts-label">모은 포인트</div>
+    <div class="pts-next" id="pts-next">유산 1곳 방문 = 10pt · 50pt마다 소원쿠폰 1장!</div>
+  </div>
+  <button class="btn-ok" style="width:100%;margin-bottom:16px;" onclick="openNewCoupon()">✏️ 소원 직접 적기</button>
+  <div class="sec-title">받은 쿠폰</div>
+  <div id="coupon-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="modal-area"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCHFFyOprUXGPGjsNabyZdgT5pR4xirfho",
+  authDomain: "kjsi-c3b26.firebaseapp.com",
+  projectId: "kjsi-c3b26",
+  storageBucket: "kjsi-c3b26.firebasestorage.app",
+  messagingSenderId: "296404787285",
+  appId: "1:296404787285:web:c74428a3d47922d60834dc",
+  measurementId: "G-YHXR4HLN84"
+};
+const GEMINI_KEY = "AIzaSyDKIuyonyn_Hhd1ALlNxS7fwR2654d71QE";
+const DB_DOC = "shared/data";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── 장소 데이터 ──────────────────────────────────────────
+const PLACES = [
+  {id:1,name:'담양 소쇄원',region:'담양',dist:26,time:'35분',emoji:'🍃',area:'전남',tags:['정원','조선'],desc:'조선 선비의 이상향을 담은 아름다운 전통 원림.'},
+  {id:2,name:'화순 고인돌 유적',region:'화순',dist:32,time:'45분',emoji:'🪨',area:'전남',tags:['세계유산','선사'],desc:'유네스코 세계문화유산. 청동기 시대 대규모 고인돌 밀집 지역.'},
+  {id:3,name:'나주 국립박물관',region:'나주',dist:38,time:'50분',emoji:'🏛️',area:'전남',tags:['박물관','마한'],desc:'영산강 유역 마한·백제 유물의 보고. 나주 금동관 등 국보급 유물 다수.'},
+  {id:4,name:'장성 필암서원',region:'장성',dist:45,time:'55분',emoji:'📖',area:'전남',tags:['세계유산','서원'],desc:'유네스코 등재 한국의 서원. 조선 중기 성리학의 산실.'},
+  {id:5,name:'고창 고인돌 유적',region:'고창',dist:58,time:'1시간',emoji:'🗿',area:'전북',tags:['세계유산','선사'],desc:'유네스코 세계문화유산. 440여 기 고인돌이 밀집한 세계 최대 규모.'},
+  {id:6,name:'고창 선운사',region:'고창',dist:72,time:'1시간 10분',emoji:'🌸',area:'전북',tags:['고찰','동백'],desc:'서해안 최고의 고찰. 봄 동백과 가을 꽃무릇이 아름다운 천년 사찰.'},
+  {id:7,name:'강진 다산초당',region:'강진',dist:74,time:'1시간 10분',emoji:'📚',area:'전남',tags:['정약용','조선'],desc:'다산 정약용이 유배 중 목민심서를 집필한 곳.'},
+  {id:8,name:'순천 선암사',region:'순천',dist:79,time:'1시간 20분',emoji:'🪷',area:'전남',tags:['세계유산','산사'],desc:'유네스코 등재 산사. 천 년 넘는 역사의 아름다운 사찰. 봄 매화가 유명.'},
+  {id:9,name:'순천만 국가정원',region:'순천',dist:83,time:'1시간 25분',emoji:'🌿',area:'전남',tags:['자연','갯벌','세계유산'],desc:'유네스코 습지 보호 구역. 드넓은 갈대밭과 철새들의 낙원.'},
+  {id:10,name:'정읍 무성서원',region:'정읍',dist:85,time:'1시간 25분',emoji:'📜',area:'전북',tags:['세계유산','서원'],desc:'유네스코 등재 한국의 서원. 최치원을 기리는 유서 깊은 서원.'},
+  {id:11,name:'익산 미륵사지',region:'익산',dist:95,time:'1시간 30분',emoji:'🏰',area:'전북',tags:['세계유산','백제'],desc:'유네스코 세계문화유산. 백제 최대 사찰 터. 동양 최대 석탑 소재지.'},
+  {id:12,name:'익산 왕궁리 유적',region:'익산',dist:97,time:'1시간 35분',emoji:'👑',area:'전북',tags:['세계유산','백제'],desc:'유네스코 세계문화유산 백제역사유적지구. 백제 왕궁의 흔적.'},
+  {id:13,name:'해남 대흥사',region:'해남',dist:98,time:'1시간 30분',emoji:'🪷',area:'전남',tags:['세계유산','산사'],desc:'유네스코 등재 산사. 두륜산 자락의 천년 고찰.'},
+  {id:14,name:'여수 진남관',region:'여수',dist:99,time:'1시간 35분',emoji:'⚓',area:'전남',tags:['이순신','임진왜란'],desc:'이순신 장군이 지휘한 전라좌수영 본영. 국내 최대 규모 단일 객사 건물.'},
+  {id:15,name:'남원 광한루원',region:'남원',dist:100,time:'1시간 35분',emoji:'🌙',area:'전북',tags:['춘향전','조선','정원'],desc:'춘향전의 배경. 조선 대표 누정 건축 광한루가 있는 아름다운 정원.'},
+  {id:16,name:'하동 쌍계사',region:'하동',dist:108,time:'1시간 40분',emoji:'🍵',area:'경남',tags:['고찰','차문화'],desc:'신라 시대 창건된 천년 고찰. 하동 녹차의 고장.'},
+  {id:17,name:'남해 관음포',region:'남해',dist:132,time:'1시간 45분',emoji:'🌊',area:'경남',tags:['이순신','임진왜란'],desc:'이순신 장군이 최후를 맞이한 노량해전의 현장. 이락사가 있는 역사 유적지.'},
+  {id:18,name:'함양 남계서원',region:'함양',dist:140,time:'1시간 50분',emoji:'🎓',area:'경남',tags:['세계유산','서원'],desc:'유네스코 등재 한국의 서원. 조선 최초 사액서원 중 하나.'},
+  {id:19,name:'합천 해인사',region:'합천',dist:155,time:'2시간',emoji:'🪷',area:'경남',tags:['세계유산','팔만대장경'],desc:'팔만대장경 보관 유네스코 세계문화유산 장경판전. 법보 사찰.'},
+  {id:20,name:'논산 돈암서원',region:'논산',dist:155,time:'2시간',emoji:'🏫',area:'충남',tags:['세계유산','서원'],desc:'유네스코 등재 한국의 서원. 조선 예학의 본거지.'},
+  {id:21,name:'통영 세병관',region:'통영',dist:160,time:'2시간 5분',emoji:'⛵',area:'경남',tags:['이순신','임진왜란'],desc:'이순신 장군의 3도수군통제영 본영. 국내 최대 단층 목조 건물.'},
+  {id:22,name:'공주 무령왕릉',region:'공주',dist:160,time:'2시간 5분',emoji:'🏺',area:'충남',tags:['세계유산','백제'],desc:'유네스코 세계문화유산. 백제 무령왕의 무덤. 금제 관식 등 귀중한 유물.'},
+  {id:23,name:'공주 공산성',region:'공주',dist:162,time:'2시간 5분',emoji:'🧱',area:'충남',tags:['세계유산','백제'],desc:'유네스코 세계문화유산. 백제 웅진 도읍기 왕성.'},
+  {id:24,name:'부여 정림사지',region:'부여',dist:175,time:'2시간 15분',emoji:'🗼',area:'충남',tags:['세계유산','백제'],desc:'유네스코 세계문화유산. 백제의 웅장한 5층 석탑이 천 년을 지키고 있는 곳.'},
+  {id:25,name:'부여 부소산성',region:'부여',dist:177,time:'2시간 20분',emoji:'🌲',area:'충남',tags:['세계유산','백제'],desc:'백제 마지막 도읍 사비의 왕성. 낙화암과 고란사의 슬픈 역사.'},
+  {id:26,name:'김해 대성동 고분군',region:'김해',dist:185,time:'2시간 20분',emoji:'⚱️',area:'경남',tags:['세계유산','가야'],desc:'유네스코 세계문화유산 가야고분군. 금관가야의 중심지.'},
+  {id:27,name:'고령 지산동 고분군',region:'고령',dist:195,time:'2시간 25분',emoji:'⛰️',area:'경북',tags:['세계유산','가야'],desc:'유네스코 세계문화유산 가야고분군. 대가야 왕들이 잠든 거대한 고분군.'},
+  {id:28,name:'경주 역사지구',region:'경주',dist:245,time:'2시간 45분',emoji:'🌅',area:'경북',tags:['세계유산','신라'],desc:'유네스코 세계문화유산. 첨성대·대릉원·안압지 등 신라 유산이 도시 곳곳에.'},
+  {id:29,name:'경주 불국사',region:'경주',dist:247,time:'2시간 45분',emoji:'🛕',area:'경북',tags:['세계유산','신라'],desc:'유네스코 세계문화유산. 신라 불교문화의 정수. 다보탑·석가탑.'},
+  {id:30,name:'경주 석굴암',region:'경주',dist:250,time:'2시간 50분',emoji:'🗿',area:'경북',tags:['세계유산','신라'],desc:'유네스코 세계문화유산. 신라 석조 예술의 최고봉. 본존불의 신비로운 미소.'},
+  {id:31,name:'경주 양동마을',region:'경주',dist:260,time:'2시간 55분',emoji:'🏘️',area:'경북',tags:['세계유산','마을','조선'],desc:'유네스코 세계문화유산. 500년 전통의 살아있는 조선 마을.'},
+  {id:32,name:'안동 하회마을',region:'안동',dist:252,time:'2시간 50분',emoji:'🎭',area:'경북',tags:['세계유산','마을','탈춤'],desc:'유네스코 세계문화유산. 풍산 류씨 집성촌. 하회별신굿탈놀이.'},
+  {id:33,name:'안동 도산서원',region:'안동',dist:258,time:'2시간 55분',emoji:'🎓',area:'경북',tags:['세계유산','이황','서원'],desc:'유네스코 등재. 퇴계 이황 선생이 세운 조선 최고의 학문 도량.'},
+  {id:34,name:'안동 병산서원',region:'안동',dist:260,time:'2시간 55분',emoji:'🏞️',area:'경북',tags:['세계유산','서원'],desc:'유네스코 등재. 낙동강을 굽어보는 아름다운 경관이 일품.'},
+  {id:35,name:'수원 화성',region:'수원',dist:320,time:'3시간 20분',emoji:'🏯',area:'경기',tags:['세계유산','정조','조선'],desc:'유네스코 세계문화유산. 정조의 꿈이 담긴 조선 최고의 성곽 건축.'},
+  {id:36,name:'남한산성',region:'광주(경기)',dist:330,time:'3시간 30분',emoji:'🌄',area:'경기',tags:['세계유산','조선'],desc:'유네스코 세계문화유산. 병자호란 당시 인조가 항전했던 산성 도시.'},
+  {id:37,name:'경복궁',region:'서울',dist:340,time:'3시간 40분',emoji:'🏯',area:'서울',tags:['궁궐','조선'],desc:'조선 왕조 정궁. 근정전·경회루 등 조선 건축의 정수.'},
+  {id:38,name:'창덕궁',region:'서울',dist:341,time:'3시간 40분',emoji:'🌿',area:'서울',tags:['세계유산','궁궐'],desc:'유네스코 세계문화유산. 자연과 어우러진 아름다운 후원이 백미.'},
+  {id:39,name:'종묘',region:'서울',dist:340,time:'3시간 40분',emoji:'🎋',area:'서울',tags:['세계유산','조선'],desc:'유네스코 세계문화유산. 조선 왕과 왕비의 신위를 모신 제례 공간.'},
+  {id:40,name:'조선왕릉(동구릉)',region:'구리',dist:350,time:'3시간 45분',emoji:'🌲',area:'경기',tags:['세계유산','왕릉'],desc:'유네스코 세계문화유산. 태조 이성계를 포함한 9기의 왕릉.'},
+  {id:41,name:'제주 성산일출봉',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🌋',area:'제주',tags:['세계유산','자연'],desc:'유네스코 세계자연유산. 수성화산이 빚어낸 제주의 대표 절경.'},
+  {id:42,name:'제주 만장굴',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🕳️',area:'제주',tags:['세계유산','자연','용암동굴'],desc:'유네스코 세계자연유산. 세계 최장 규모의 용암동굴. 거대한 용암석주가 장관.'},
+];
+
+const AREAS = ['전체','전남','전북','경남','경북','충남','경기','서울','제주'];
+const COUPON_MILESTONES = [50, 100, 150, 200, 250, 300, 350, 400];
+
+// ── 상태 ──────────────────────────────────────────────
+let state = {points:0, visited:{}, comments:{}, coupons:[]};
+let activeArea = '전체';
+let pendingPhoto = null;
+let lastAIText = '';
+let speaking = false;
+
+// ── Firebase 실시간 동기화 ─────────────────────────────
+const docRef = doc(db, 'shared', 'data');
+
+onSnapshot(docRef, snap => {
+  if (snap.exists()) {
+    const remote = snap.data();
+    state = {...state, ...remote};
+    renderAll();
+  }
+});
+
+async function saveToFirebase() {
+  try {
+    await setDoc(docRef, state, {merge: true});
+  } catch(e) {
+    console.error('Firebase 저장 오류:', e);
+    showToast('저장 중 오류가 발생했어요.');
+  }
+}
+
+function renderAll() {
+  renderHeader();
+  renderPlaces();
+  renderLog();
+  renderCoupon();
+}
+
+// ── 네비게이션 ─────────────────────────────────────────
+window.go = function(id) {
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('scr-'+id).classList.add('on');
+  document.getElementById('nb-'+id).classList.add('on');
+};
+
+// ── 헤더 & 포인트 ──────────────────────────────────────
+function renderHeader() {
+  const pts = state.points || 0;
+  document.getElementById('hdr-pt').textContent = pts;
+  document.getElementById('pts-big').textContent = pts;
+  const nextMilestone = COUPON_MILESTONES.find(m => {
+    const count = Math.floor(pts / m);
+    const issued = (state.coupons || []).filter(c => c.milestone === m).length;
+    return pts < m * (issued + 1);
+  }) || COUPON_MILESTONES[0];
+  const prev = (() => {
+    const idx = COUPON_MILESTONES.indexOf(nextMilestone);
+    if (idx <= 0) return 0;
+    return COUPON_MILESTONES[idx-1];
+  })();
+  const pct = Math.round(((pts - prev) / (nextMilestone - prev)) * 100);
+  document.getElementById('hdr-bar').style.width = Math.min(pct, 100) + '%';
+  document.getElementById('hdr-next-label').textContent = `${nextMilestone - pts}pt 더 필요`;
+  document.getElementById('pts-next').textContent = `유산 1곳 방문 = 10pt · 다음 소원쿠폰까지 ${nextMilestone - pts}pt 남았어요!`;
+}
+
+// ── 필터 & 장소 목록 ───────────────────────────────────
+function renderFilters() {
+  document.getElementById('filter-row').innerHTML = AREAS.map(a =>
+    `<button class="fb${a===activeArea?' on':''}" onclick="setArea('${a}')">${a}</button>`
+  ).join('');
+}
+window.setArea = function(a) { activeArea = a; renderFilters(); renderPlaces(); };
+
+function renderPlaces() {
+  const el = document.getElementById('place-list');
+  const list = PLACES.filter(p => activeArea==='전체' || p.area===activeArea).sort((a,b) => a.dist-b.dist);
+  el.innerHTML = list.map(p => {
+    const v = (state.visited||{})[p.id];
+    return `<div class="place-card">
+      <div class="pc-top">
+        <div class="pc-emoji">${p.emoji}</div>
+        <div class="pc-info">
+          <div class="pc-name">${p.name}</div>
+          <div class="pc-meta"><i class="ti ti-car" style="font-size:13px"></i> ${p.dist>0?p.dist+'km · ':''}약 ${p.time}</div>
+          <div class="pc-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}${v?`<span class="vtag"><i class="ti ti-check" style="font-size:12px"></i> 방문완료</span>`:''}</div>
+        </div>
+      </div>
+      <div class="pc-actions">
+        <button class="pc-btn" onclick="openNavi(${p.id})"><i class="ti ti-navigation"></i>네비</button>
+        <button class="pc-btn" onclick="openAIfor(${p.id})"><i class="ti ti-sparkles"></i>해설</button>
+        <button class="pc-btn${v?' done':''}" onclick="${v?'':' markVisit('+p.id+')'}"><i class="ti ti-${v?'check':'circle-check'}"></i>${v?'완료':'방문완료'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── 네비 연결 ──────────────────────────────────────────
+window.openNavi = function(id) {
+  const p = PLACES.find(x=>x.id===id);
+  const q = encodeURIComponent(p.name);
+  showModal(`<div class="modal">
+    <div class="modal-title"><i class="ti ti-navigation" style="color:var(--brand)"></i> ${p.name} 길찾기</div>
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <a href="tmap://search?name=${q}" style="display:block;padding:15px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:18px;text-align:center;color:var(--text1);text-decoration:none;background:var(--bg2);font-family:'Noto Sans KR',sans-serif;">T map으로 길찾기</a>
+      <a href="kakaomap://search?q=${q}" style="display:block;padding:15px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:18px;text-align:center;color:var(--text1);text-decoration:none;background:var(--bg2);font-family:'Noto Sans KR',sans-serif;">카카오맵으로 길찾기</a>
+      <a href="https://map.naver.com/v5/search/${q}" target="_blank" style="display:block;padding:15px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:18px;text-align:center;color:var(--text1);text-decoration:none;background:var(--bg2);font-family:'Noto Sans KR',sans-serif;">웹 지도로 보기</a>
+    </div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="closeModal()">닫기</button></div>
+  </div>`);
+};
+
+// ── 방문 기록 ──────────────────────────────────────────
+window.markVisit = function(id) {
+  const p = PLACES.find(x=>x.id===id);
+  pendingPhoto = null;
+  showModal(`<div class="modal">
+    <div class="modal-title">${p.emoji} ${p.name} 방문 기록</div>
+    <div class="photo-box" id="photo-box" onclick="document.getElementById('photo-file').click()">
+      <i class="ti ti-camera"></i>
+      <span class="ph-label">사진 한 장 찍어보세요 (선택)</span>
+    </div>
+    <input type="file" id="photo-file" accept="image/*" capture="environment" style="display:none" onchange="previewPhoto(this)"/>
+    <input type="text" id="mv-memo" placeholder="오늘 다녀온 소감 한 줄 (선택)"/>
+    <div style="font-size:15px;color:var(--text3);margin-bottom:4px;">방문하면 10pt가 적립돼요!</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-ok" onclick="confirmVisit(${id})">방문 완료 ✓</button>
+    </div>
+  </div>`);
+};
+
+window.previewPhoto = function(input) {
+  if (!input.files||!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    pendingPhoto = e.target.result;
+    const box = document.getElementById('photo-box');
+    if (box) {
+      let img = box.querySelector('img');
+      if (!img) { img = document.createElement('img'); box.appendChild(img); }
+      img.src = pendingPhoto;
+      box.classList.add('has-img');
+    }
+  };
+  reader.readAsDataURL(input.files[0]);
+};
+
+window.confirmVisit = async function(id) {
+  const memo = document.getElementById('mv-memo')?.value || '';
+  const p = PLACES.find(x=>x.id===id);
+  const d = new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'});
+  if (!state.visited) state.visited = {};
+  state.visited[id] = {date:d, memo:memo||`${p.name}에 다녀왔어요!`, photo: pendingPhoto||null};
+  state.points = (state.points||0) + 10;
+  pendingPhoto = null;
+  checkCoupons();
+  closeModal();
+  await saveToFirebase();
+  showPtPopup(10);
+};
+
+function checkCoupons() {
+  if (!Array.isArray(state.coupons)) state.coupons = [];
+  const pts = state.points || 0;
+  COUPON_MILESTONES.forEach(m => {
+    if (pts >= m) {
+      const already = state.coupons.filter(c => c.milestone === m).length;
+      const should = Math.floor(pts / m);
+      for (let i = already; i < should && i < 1; i++) {
+        state.coupons.push({milestone:m, wish:'', used:false, earned:new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'})});
+      }
+    }
+  });
+}
+
+function showPtPopup(pts) {
+  showModal(`<div class="modal" style="text-align:center;">
+    <div style="font-size:36px;margin-bottom:10px;">🌟</div>
+    <div style="font-size:22px;font-weight:700;color:var(--brand);margin-bottom:6px;">+${pts}pt 적립!</div>
+    <div style="font-size:17px;color:var(--text2);margin-bottom:18px;">수고하셨어요!<br>은호도 마음으로 함께해요 🧡</div>
+    <button class="btn-ok" style="width:100%" onclick="closeModal()">감사해요!</button>
+  </div>`);
+}
+
+// ── 기록 탭 ────────────────────────────────────────────
+function renderLog() {
+  const visited = Object.entries(state.visited||{});
+  const el = document.getElementById('log-list');
+  const sg = document.getElementById('stat-grid');
+  const coupons = Array.isArray(state.coupons) ? state.coupons : [];
+  sg.innerHTML = `
+    <div class="stat-card"><div class="stat-val">${visited.length}</div><div class="stat-lbl">방문한 유산</div></div>
+    <div class="stat-card"><div class="stat-val">${state.points||0}pt</div><div class="stat-lbl">모은 포인트</div></div>
+    <div class="stat-card"><div class="stat-val">${coupons.length}장</div><div class="stat-lbl">받은 쿠폰</div></div>
+    <div class="stat-card"><div class="stat-val">${Math.round((visited.length/PLACES.length)*100)}%</div><div class="stat-lbl">전국 달성률</div></div>
+  `;
+  if (!visited.length) { el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:17px;padding:28px 0;">아직 방문 기록이 없어요.<br>코스 탭에서 방문 완료를 눌러 보세요!</div>'; return; }
+  el.innerHTML = visited.map(([id,v])=>{
+    const p = PLACES.find(x=>x.id==id)||{emoji:'📍',name:'유산'};
+    const cmts = ((state.comments||{})[id]||[]).map(c=>`<div class="comment"><div class="comment-who">${c.name}</div><div class="comment-text">${c.text}</div></div>`).join('');
+    const photoEl = v.photo ? `<img src="${v.photo}" class="log-photo" alt="${p.name} 방문 사진"/>` : '';
+    return `<div class="log-row">
+      <div class="log-ico">${p.emoji}</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="log-name">${p.name}</div>
+          <div class="log-date">${v.date}</div>
+        </div>
+        <div class="log-note">${v.memo}</div>
+        ${photoEl}
+        ${cmts}
+        <button class="add-comment-btn" onclick="openAddComment(${id})"><i class="ti ti-message-circle" style="font-size:14px"></i> 댓글 달기</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.openAddComment = function(id) {
+  showModal(`<div class="modal">
+    <div class="modal-title">💬 댓글 달기</div>
+    <input type="text" id="cmt-name" placeholder="이름 (예: 은호)"/>
+    <textarea id="cmt-text" placeholder="한 줄 응원 메시지"></textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-ok" onclick="addComment(${id})">등록</button>
+    </div>
+  </div>`);
+};
+
+window.addComment = async function(id) {
+  const name = document.getElementById('cmt-name')?.value.trim();
+  const text = document.getElementById('cmt-text')?.value.trim();
+  if (!name||!text) { showToast('이름과 댓글을 입력해 주세요!'); return; }
+  if (!state.comments) state.comments = {};
+  if (!state.comments[id]) state.comments[id] = [];
+  state.comments[id].push({name, text});
+  closeModal();
+  await saveToFirebase();
+};
+
+// ── 소원쿠폰 ───────────────────────────────────────────
+function renderCoupon() {
+  const coupons = Array.isArray(state.coupons) ? state.coupons : [];
+  const el = document.getElementById('coupon-list');
+  if (!coupons.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:17px;padding:20px 0;">아직 쿠폰이 없어요.<br>50pt를 모으면 소원을 적을 수 있어요 🎁</div>';
+    return;
+  }
+  el.innerHTML = coupons.map((c,i)=>`
+    <div class="coupon${c.used?' used':''}">
+      <div class="coupon-icon">${c.used?'✅':'🎁'}</div>
+      <div style="flex:1;">
+        <div class="coupon-name">소원쿠폰 #${i+1}</div>
+        <div class="coupon-desc">${c.wish || '(소원을 아직 적지 않았어요)'}</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:4px;">${c.earned} 발행</div>
+        <div class="coupon-actions">
+          ${!c.wish && !c.used ? `<button class="btn-use" onclick="editWish(${i})">✏️ 소원 적기</button>` : ''}
+          ${c.wish && !c.used ? `<button class="btn-use" onclick="useCoupon(${i})">사용하기</button>` : ''}
+          ${c.wish ? `<button class="btn-share" onclick="shareCoupon(${i})"><i class="ti ti-share"></i> 은호에게 공유</button>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+window.openNewCoupon = function() {
+  const pts = state.points || 0;
+  const coupons = Array.isArray(state.coupons) ? state.coupons : [];
+  const unusedBlank = coupons.find(c => !c.wish && !c.used);
+  if (unusedBlank) {
+    showToast('아직 소원을 적지 않은 쿠폰이 있어요!');
+    go('coupon');
+    return;
+  }
+  if (pts < 50) {
+    showModal(`<div class="modal" style="text-align:center;">
+      <div style="font-size:32px;margin-bottom:10px;">🎁</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px;">포인트가 부족해요</div>
+      <div style="font-size:16px;color:var(--text2);margin-bottom:18px;">소원쿠폰은 50pt마다 발행돼요.<br>지금은 ${pts}pt예요.</div>
+      <button class="btn-ok" style="width:100%" onclick="closeModal()">알겠어요</button>
+    </div>`);
+    return;
+  }
+  const earned = coupons.filter(c => c.milestone).length;
+  const canHave = Math.floor(pts / 50);
+  if (earned >= canHave) {
+    showToast('포인트에 맞는 쿠폰을 이미 모두 발행했어요!');
+    return;
+  }
+  if (!Array.isArray(state.coupons)) state.coupons = [];
+  state.coupons.push({milestone:50*canHave, wish:'', used:false, earned:new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'})});
+  saveToFirebase();
+  showToast('새 소원쿠폰이 생겼어요! 소원을 적어보세요 🎁');
+  go('coupon');
+};
+
+window.editWish = function(i) {
+  showModal(`<div class="modal">
+    <div class="modal-title">🎁 소원 적기</div>
+    <div style="font-size:15px;color:var(--text2);margin-bottom:10px;">은호에게 부탁하고 싶은 소원을 적어보세요!</div>
+    <textarea id="wish-text" placeholder="예) 삼겹살 사줘, 같이 여행 가자, 안마해줘...">${state.coupons[i].wish||''}</textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-ok" onclick="saveWish(${i})">저장</button>
+    </div>
+  </div>`);
+};
+
+window.saveWish = async function(i) {
+  const wish = document.getElementById('wish-text')?.value.trim();
+  if (!wish) { showToast('소원을 입력해 주세요!'); return; }
+  state.coupons[i].wish = wish;
+  closeModal();
+  await saveToFirebase();
+  showToast('소원이 저장됐어요! 은호에게 공유해보세요 🧡');
+};
+
+window.useCoupon = async function(i) {
+  showModal(`<div class="modal" style="text-align:center;">
+    <div style="font-size:32px;margin-bottom:10px;">🎁</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px;">${state.coupons[i].wish}</div>
+    <div style="font-size:16px;color:var(--text2);margin-bottom:18px;">이 소원쿠폰을 사용하시겠어요?</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-ok" onclick="confirmUseCoupon(${i})">사용할게요!</button>
+    </div>
+  </div>`);
+};
+
+window.confirmUseCoupon = async function(i) {
+  state.coupons[i].used = true;
+  closeModal();
+  await saveToFirebase();
+};
+
+window.shareCoupon = function(i) {
+  const c = state.coupons[i];
+  const text = `🧡 엄마아빠 답사일기 소원쿠폰 🎁\n\n소원: ${c.wish}\n\n열심히 문화유산 답사하고 모은 소원쿠폰이에요!\n은호야, 꼭 들어줘~ 😊`;
+  if (navigator.share) {
+    navigator.share({ title: '소원쿠폰', text }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(text).then(()=>showToast('쿠폰 내용이 복사됐어요! 카톡으로 붙여넣어 보세요 🧡'));
+  }
+};
+
+// ── AI 해설 (Gemini) ────────────────────────────────────
+window.setq = function(q) {
+  const sel = document.getElementById('ai-sel').value;
+  document.getElementById('ai-inp').value = sel ? `${sel}: ${q}` : q;
+};
+
+window.askAI = async function() {
+  const inp = document.getElementById('ai-inp');
+  const btn = document.getElementById('ai-go-btn');
+  const out = document.getElementById('ai-out');
+  const speakBtn = document.getElementById('speak-btn');
+  const sel = document.getElementById('ai-sel').value;
+  let q = inp.value.trim();
+  if (!q) { if (!sel) { showToast('유산을 선택하거나 질문을 입력해 주세요.'); return; } q = `${sel}에 대해 간단히 설명해 줘`; }
+  btn.disabled = true;
+  speakBtn.style.display = 'none';
+  out.innerHTML = '<div><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        contents: [{parts:[{text:`당신은 친절한 한국 문화유산 해설사입니다. 어르신이 편안하게 읽을 수 있도록 쉬운 말로, 따뜻하게, 200자 이내로 핵심만 설명해 주세요. 이모지 1~2개 활용.\n\n질문: ${q}`}]}],
+        generationConfig: {maxOutputTokens:400}
+      })
+    });
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '답변을 가져오지 못했어요.';
+    lastAIText = text;
+    out.innerHTML = text.replace(/\n/g,'<br>');
+    speakBtn.style.display = 'inline-flex';
+    inp.value = '';
+  } catch(e) {
+    out.innerHTML = '<span style="color:var(--text3);font-size:17px;">잠시 연결이 안 됐어요. 다시 눌러 주세요.</span>';
+  }
+  btn.disabled = false;
+};
+
+// ── TTS 음성 읽기 ──────────────────────────────────────
+window.speakResult = function() {
+  if (!lastAIText) return;
+  if (speaking) { speechSynthesis.cancel(); speaking = false; document.getElementById('speak-btn').innerHTML='<i class="ti ti-volume"></i> 음성으로 듣기'; return; }
+  const clean = lastAIText.replace(/<[^>]+>/g,'').replace(/[🌟🎁✅🪷🌸📚⛵⚓🌊🍵🎋🌿🗿🏛️🏰👑🏯🌋🕳️⛰️🌅🏺🏘️🎭🧱🌙📖📜🎓🏞️🌲🌄🗼🪨🍃⚱️🛕]/gu,'');
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang = 'ko-KR';
+  utt.rate = 0.9;
+  utt.onend = () => { speaking = false; document.getElementById('speak-btn').innerHTML='<i class="ti ti-volume"></i> 음성으로 듣기'; };
+  speechSynthesis.speak(utt);
+  speaking = true;
+  document.getElementById('speak-btn').innerHTML='<i class="ti ti-player-stop"></i> 멈추기';
+};
+
+window.openAIfor = function(id) {
+  const p = PLACES.find(x=>x.id===id);
+  go('ai');
+  const sel = document.getElementById('ai-sel');
+  for (let o of sel.options) { if (o.value===p.name) { sel.value=p.name; break; } }
+  document.getElementById('ai-inp').value = `${p.name}에 대해 쉽게 설명해 주세요`;
+  askAI();
+};
+
+document.getElementById('ai-inp').addEventListener('keydown', e => { if(e.key==='Enter') askAI(); });
+
+// AI select 초기화
+function initAISel() {
+  const sel = document.getElementById('ai-sel');
+  PLACES.forEach(p => { const o = document.createElement('option'); o.value=p.name; o.textContent=p.name; sel.appendChild(o); });
+}
+
+// ── 모달 & 토스트 ──────────────────────────────────────
+function showModal(html) {
+  const a = document.getElementById('modal-area');
+  a.innerHTML = `<div class="modal-bg" onclick="handleBgClick(event)">${html}</div>`;
+}
+window.closeModal = function() { document.getElementById('modal-area').innerHTML=''; pendingPhoto=null; };
+window.handleBgClick = function(e) { if (e.target.classList.contains('modal-bg')) closeModal(); };
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ── 초기화 ─────────────────────────────────────────────
+renderFilters();
+initAISel();
+renderAll();
+
+// ── Service Worker 등록 ────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
