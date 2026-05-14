@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#B85C38"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="답사일기"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<title>정심씨와 세일씨의 즐거운 답사일기</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --brand:#B85C38;--brand-light:#FAF0EB;--brand-mid:#E8A07A;
+  --point:#3B6D11;--point-light:#EAF3DE;
+  --gold:#BA7517;--gold-light:#FAEEDA;
+  --bg:#fff;--bg2:#f7f5f3;--bg3:#f0ede9;
+  --text1:#1a1208;--text2:#5c4a38;--text3:#9c8878;
+  --border:#e8e0d8;--radius:14px;--radius-sm:10px;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1a1208;--bg2:#241a10;--bg3:#2e2218;--text1:#f5ede4;--text2:#c8a88c;--text3:#7a6050;--border:#3a2a1a;}
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text1);min-height:100vh;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden;}
+.hdr{background:var(--brand);padding:20px 18px 14px;position:sticky;top:0;z-index:10;}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.hdr-title{font-size:17px;font-weight:700;color:#fff;line-height:1.4;}
+.hdr-sub{font-size:13px;color:#F5C4B3;margin-top:2px;}
+.pt-chip{background:#fff;color:var(--brand);font-size:15px;font-weight:700;border-radius:20px;padding:5px 13px;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;}
+.pt-bar-wrap{margin-top:8px;}
+.pt-bar-label{font-size:13px;color:#F5C4B3;margin-bottom:4px;display:flex;justify-content:space-between;}
+.pt-bar{height:6px;background:rgba(255,255,255,0.25);border-radius:3px;}
+.pt-bar-fill{height:6px;background:#fff;border-radius:3px;transition:width .5s;}
+.nav{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:88px;z-index:9;}
+.nb{flex:1;padding:12px 4px 10px;font-size:12px;color:var(--text3);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:2px solid transparent;font-family:'Noto Sans KR',sans-serif;}
+.nb i{font-size:22px;}
+.nb.on{color:var(--brand);border-bottom-color:var(--brand);}
+.scr{display:none;padding:18px 16px 100px;}
+.scr.on{display:block;}
+.sec-title{font-size:18px;font-weight:700;color:var(--text1);margin-bottom:12px;}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.fb{font-size:13px;padding:6px 13px;border:1px solid var(--border);border-radius:18px;background:none;color:var(--text2);cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.fb.on{background:var(--brand);color:#fff;border-color:var(--brand);}
+.place-card{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;background:var(--bg);}
+.pc-top{display:flex;align-items:stretch;}
+.pc-emoji{width:58px;min-height:76px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--brand-light);flex-shrink:0;}
+.pc-info{flex:1;padding:12px 13px;}
+.pc-name{font-size:18px;font-weight:700;color:var(--text1);line-height:1.25;}
+.pc-meta{font-size:13px;color:var(--text3);margin-top:4px;}
+.pc-tags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+.tag{font-size:12px;background:var(--brand-light);color:#712B13;padding:3px 9px;border-radius:10px;}
+.vtag{font-size:12px;background:var(--point-light);color:#27500A;padding:3px 9px;border-radius:10px;}
+.pc-actions{display:flex;border-top:1px solid var(--border);}
+.pc-btn{flex:1;padding:11px 4px;font-size:13px;color:var(--text2);border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-family:'Noto Sans KR',sans-serif;}
+.pc-btn:not(:last-child){border-right:1px solid var(--border);}
+.pc-btn.done{color:var(--point);font-weight:700;}
+.pc-btn i{font-size:16px;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;}
+.modal{background:var(--bg);border-radius:20px;padding:22px;width:100%;max-width:360px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:19px;font-weight:700;margin-bottom:16px;color:var(--text1);}
+.modal input[type=text],.modal input[type=number]{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:17px;background:var(--bg2);color:var(--text1);outline:none;margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+.modal textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:17px;resize:none;height:80px;background:var(--bg2);color:var(--text1);outline:none;font-family:'Noto Sans KR',sans-serif;}
+.modal-btns{display:flex;gap:9px;margin-top:14px;}
+.btn-cancel{flex:1;padding:13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;font-size:17px;cursor:pointer;color:var(--text2);font-family:'Noto Sans KR',sans-serif;}
+.btn-ok{flex:1;padding:13px;border:none;border-radius:var(--radius-sm);background:var(--brand);color:#fff;font-size:17px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.photo-box{width:100%;height:140px;border:2px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;background:var(--bg2);margin-bottom:12px;position:relative;overflow:hidden;}
+.photo-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.photo-box .ph-label{font-size:14px;color:var(--text3);z-index:1;}
+.photo-box i{font-size:32px;color:var(--text3);z-index:1;}
+.photo-box.has-img i,.photo-box.has-img .ph-label{opacity:0;}
+.pts-big{font-size:44px;font-weight:700;color:var(--brand);line-height:1;}
+.pts-label{font-size:17px;color:var(--text2);margin-top:4px;}
+.pts-next{font-size:15px;color:var(--text2);margin-top:10px;background:var(--bg2);border-radius:var(--radius-sm);padding:10px 13px;}
+.coupon{border:2px dashed var(--gold);border-radius:var(--radius);padding:16px;margin-bottom:11px;background:var(--gold-light);display:flex;align-items:flex-start;gap:13px;}
+.coupon.used{opacity:.4;filter:grayscale(.7);}
+.coupon-icon{font-size:30px;flex-shrink:0;}
+.coupon-name{font-size:18px;font-weight:700;color:#412402;}
+.coupon-desc{font-size:15px;color:#633806;margin-top:3px;white-space:pre-wrap;word-break:break-all;}
+.coupon-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.btn-use{font-size:14px;color:var(--gold);border:1px solid var(--gold);border-radius:10px;padding:5px 12px;background:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-share{font-size:14px;color:var(--brand);border:1px solid var(--brand-mid);border-radius:10px;padding:5px 12px;background:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.log-row{display:flex;gap:11px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.log-ico{font-size:26px;flex-shrink:0;}
+.log-name{font-size:18px;font-weight:700;color:var(--text1);}
+.log-note{font-size:15px;color:var(--text2);margin-top:3px;}
+.log-date{font-size:13px;color:var(--text3);white-space:nowrap;}
+.log-photo{width:100%;max-height:180px;object-fit:cover;border-radius:var(--radius-sm);margin-top:9px;display:block;}
+.comment{background:var(--brand-light);border-radius:var(--radius-sm);padding:9px 11px;margin-top:7px;}
+.comment-who{font-weight:700;color:var(--brand);font-size:13px;margin-bottom:3px;}
+.comment-text{color:#712B13;font-size:15px;}
+.add-comment-btn{font-size:14px;color:var(--brand);border:1px solid var(--brand-mid);border-radius:10px;padding:5px 12px;background:none;cursor:pointer;margin-top:7px;font-family:'Noto Sans KR',sans-serif;}
+.ai-box{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;background:var(--bg);}
+.ai-sel{width:100%;padding:13px 14px;border:none;border-bottom:1px solid var(--border);font-size:17px;background:var(--bg2);color:var(--text1);outline:none;font-family:'Noto Sans KR',sans-serif;}
+.ai-row{display:flex;gap:8px;padding:11px 13px;}
+.ai-inp{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;font-size:17px;background:var(--bg2);color:var(--text1);outline:none;font-family:'Noto Sans KR',sans-serif;}
+.ai-go{background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 15px;font-size:16px;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;}
+.ai-go:disabled{opacity:.5;}
+.ai-result{padding:0 13px 13px;}
+.ai-out{background:var(--bg2);border-radius:var(--radius-sm);padding:14px;font-size:18px;color:var(--text1);line-height:1.8;min-height:60px;}
+.ai-speak-btn{display:inline-flex;align-items:center;gap:5px;font-size:14px;color:var(--brand);border:1px solid var(--brand-mid);border-radius:10px;padding:5px 12px;background:none;cursor:pointer;margin-top:8px;font-family:'Noto Sans KR',sans-serif;}
+.quick-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 13px 11px;}
+.qb{font-size:14px;background:var(--bg2);color:var(--text2);border:1px solid var(--border);border-radius:16px;padding:6px 12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;}
+.stat-card{background:var(--bg2);border-radius:var(--radius-sm);padding:14px;}
+.stat-val{font-size:28px;font-weight:700;color:var(--brand);}
+.stat-lbl{font-size:14px;color:var(--text2);margin-top:3px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--brand);display:inline-block;animation:bop 1s infinite;}
+.dot:nth-child(2){animation-delay:.15s;}.dot:nth-child(3){animation-delay:.3s;}
+@keyframes bop{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1208;color:#fff;padding:11px 20px;border-radius:20px;font-size:15px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.show{opacity:1;}
+.coupon-new-form{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.coupon-new-form label{font-size:15px;color:var(--text2);font-weight:500;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-title">정심씨와 세일씨의 즐거운 답사일기🧡</div>
+      <div class="hdr-sub">은호도 마음으로 함께해요 &nbsp;|&nbsp; 🏔️ BAC 역사문화대장정</div>
+    <div style="margin-top:6px;font-size:12px;color:#F5C4B3;display:flex;align-items:center;gap:6px;">
+      <span>BAC 인증 완료:</span>
+      <span id="bac-count" style="color:#fff;font-weight:700;">0 / 100</span>
+      <span style="flex:1;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;overflow:hidden;"><span id="bac-bar" style="display:block;height:4px;background:#fff;border-radius:2px;width:0%;transition:width .5s;"></span></span>
+    </div>
+    </div>
+    <div class="pt-chip"><i class="ti ti-star"></i><span id="hdr-pt">0</span>pt</div>
+  </div>
+  <div class="pt-bar-wrap">
+    <div class="pt-bar-label"><span>다음 소원쿠폰까지</span><span id="hdr-next-label">50pt 필요</span></div>
+    <div class="pt-bar"><div class="pt-bar-fill" id="hdr-bar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nb on" onclick="go('tour')" id="nb-tour"><i class="ti ti-map-2"></i>코스</button>
+  <button class="nb" onclick="go('ai')" id="nb-ai"><i class="ti ti-sparkles"></i>해설</button>
+  <button class="nb" onclick="go('log')" id="nb-log"><i class="ti ti-book-2"></i>기록</button>
+  <button class="nb" onclick="go('coupon')" id="nb-coupon"><i class="ti ti-ticket"></i>쿠폰</button>
+</nav>
+
+<!-- 코스 -->
+<div class="scr on" id="scr-tour">
+  <div class="sec-title">광주에서 가까운 순 전국 문화유산</div>
+  <div class="filter-row" id="filter-row"></div>
+  <div id="place-list"></div>
+</div>
+
+<!-- AI 해설 -->
+<div class="scr" id="scr-ai">
+  <div class="sec-title">AI 문화유산 해설</div>
+  <div class="ai-box">
+    <select class="ai-sel" id="ai-sel" onchange="showPlaceDesc()"><option value="">— 유산을 선택하세요 —</option></select>
+    <div class="ai-row">
+      <input class="ai-inp" id="ai-inp" placeholder="궁금한 점을 물어보세요..."/>
+      <button class="ai-go" id="ai-go-btn" onclick="askAI()">설명 보기</button>
+    </div>
+
+    <div class="ai-result">
+      <div class="ai-out" id="ai-out"><span style="color:var(--text3);font-size:17px;">유산을 고르고 물어보시면<br>쉽게 설명해 드려요 😊</span></div>
+      <button class="ai-speak-btn" id="speak-btn" onclick="speakResult()" style="display:none"><i class="ti ti-volume"></i> 음성으로 듣기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 기록 -->
+<div class="scr" id="scr-log">
+  <div class="stat-grid" id="stat-grid"></div>
+  <div class="sec-title">방문 기록</div>
+  <div id="log-list"></div>
+</div>
+
+<!-- 쿠폰 -->
+<div class="scr" id="scr-coupon">
+  <div style="background:var(--bg2);border-radius:var(--radius);padding:14px;margin-bottom:16px;border:1px solid var(--border);">
+    <div style="font-size:15px;font-weight:700;color:var(--brand);margin-bottom:6px;">🏔️ BAC 역사문화대장정</div>
+    <div style="font-size:14px;color:var(--text2);line-height:1.7;">유홍준 교수의 「나의 문화유산답사기」 속 전국 100곳을 직접 걷는 블랙야크 챌린지예요.<br>각 장소 방문 후 <b>BAC 앱</b>에 GPS 발도장 + 사진 업로드하면 인증 완료!<br>인증지마다 <b>1,000 BAC 코인</b> 적립, 100곳 완주 시 <b>완주 인증서 + 10만 코인</b> 🎉</div>
+    <a href="https://bac.blackyak.com/BAC/ChallengeProgram/1046" target="_blank" style="display:inline-block;margin-top:10px;font-size:13px;color:var(--brand);border:1px solid var(--brand-mid);border-radius:10px;padding:5px 12px;text-decoration:none;">BAC 공식 페이지 보기 →</a>
+  </div>
+  <div class="sec-title">포인트 & 소원쿠폰</div>
+  <div style="margin-bottom:20px;">
+    <div class="pts-big" id="pts-big">0</div>
+    <div class="pts-label">모은 포인트</div>
+    <div class="pts-next" id="pts-next">유산 1곳 방문 = 10pt · 50pt마다 소원쿠폰 1장!</div>
+  </div>
+  <button class="btn-ok" style="width:100%;margin-bottom:16px;" onclick="openNewCoupon()">✏️ 소원 직접 적기</button>
+  <div class="sec-title">받은 쿠폰</div>
+  <div id="coupon-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="modal-area"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCHFFyOprUXGPGjsNabyZdgT5pR4xirfho",
+  authDomain: "kjsi-c3b26.firebaseapp.com",
+  projectId: "kjsi-c3b26",
+  storageBucket: "kjsi-c3b26.firebasestorage.app",
+  messagingSenderId: "296404787285",
+  appId: "1:296404787285:web:c74428a3d47922d60834dc",
+  measurementId: "G-YHXR4HLN84"
+};
+const CLOUDINARY_NAME = "dpwwihent";
+const CLOUDINARY_PRESET = "ksjieunho";
+const DB_DOC = "shared/data";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── 장소 데이터 ──────────────────────────────────────────
+const PLACES = [
+  {id:1,name:'소쇄원',region:'담양',dist:26,time:'35분',emoji:'🍃',area:'전남',bac:true,tags:['정원','조선','BAC인증'],desc:'엄마, 소쇄원은 조선 선비 양산보가 만든 아름다운 전통 정원이에요 🍃 자연 계곡과 정자가 어우러진 곳으로, 나의 문화유산답사기 1권 남도답사의 핵심이에요. BAC 인증은 제월당 앞에서!'},
+  {id:2,name:'무위사',region:'강진',dist:72,time:'1시간 10분',emoji:'🪷',area:'전남',bac:true,tags:['고찰','고려','BAC인증'],desc:'아빠, 무위사 극락보전은 고려 시대 건축의 아름다움을 그대로 간직한 곳이에요 🪷 단아하고 소박한 모습이 매력적인 천년 고찰이에요. BAC 인증은 극락보전 앞에서!'},
+  {id:3,name:'다산초당',region:'강진',dist:74,time:'1시간 10분',emoji:'📚',area:'전남',bac:true,tags:['정약용','조선','BAC인증'],desc:'엄마, 다산 정약용 선생이 18년 유배 중에 목민심서 등 500여 권을 쓴 곳이에요 📚 나의 문화유산답사기 1권 남도답사 일번지의 핵심 코스예요. BAC 인증은 다산초당 현판 앞에서!'},
+  {id:4,name:'녹우당',region:'해남',dist:95,time:'1시간 30분',emoji:'🏡',area:'전남',bac:true,tags:['고택','조선','윤선도','BAC인증'],desc:'아빠, 녹우당은 조선 최고의 시인 윤선도 선생 가문의 고택이에요 🏡 고산 윤선도와 공재 윤두서의 유물이 보존된 역사적인 곳이에요. BAC 인증은 해남윤씨 녹우당 비석 앞에서!'},
+  {id:5,name:'대흥사',region:'해남',dist:98,time:'1시간 30분',emoji:'🪷',area:'전남',bac:true,tags:['세계유산','산사','BAC인증'],desc:'엄마, 대흥사는 두륜산 자락의 유네스코 세계문화유산 산사예요 🪷 서산대사의 유물이 보관된 천년 고찰이에요. BAC 인증은 대웅보전 앞에서!'},
+  {id:6,name:'미황사',region:'해남',dist:105,time:'1시간 40분',emoji:'🌊',area:'전남',bac:true,tags:['고찰','달마산','BAC인증'],desc:'아빠, 미황사는 달마산 끝자락 바다가 내려다보이는 아름다운 절이에요 🌊 땅끝 해남의 절경과 함께하는 고즈넉한 사찰이에요. BAC 인증은 대웅보전 앞에서!'},
+  {id:7,name:'보길도 윤선도 원림',region:'완도',dist:120,time:'1시간 50분',emoji:'🌿',area:'전남',bac:true,tags:['정원','윤선도','BAC인증'],desc:'엄마, 보길도 세연정은 윤선도 선생이 귀양살이하며 만든 아름다운 정원이에요 🌿 배를 타고 들어가는 섬 여행이라 더 특별해요. BAC 인증은 세연정 앞에서!'},
+  {id:8,name:'보림사',region:'장흥',dist:82,time:'1시간 20분',emoji:'🪷',area:'전남',bac:true,tags:['통일신라','철불','BAC인증'],desc:'아빠, 보림사는 통일신라 시대 창건된 고찰로 국보 철조비로자나불좌상이 있어요 🪷 한국 최초의 가람 배치를 갖춘 역사적인 절이에요. BAC 인증은 대웅보전 앞에서!'},
+  {id:9,name:'선암사',region:'순천',dist:79,time:'1시간 20분',emoji:'🪷',area:'전남',bac:true,tags:['세계유산','산사','BAC인증'],desc:'엄마, 선암사는 유네스코 세계문화유산 산사예요 🪷 봄 매화와 함께하는 승선교 풍경이 정말 아름다워요. BAC 인증은 승선교 앞에서!'},
+  {id:10,name:'송광사',region:'순천',dist:83,time:'1시간 25분',emoji:'🪷',area:'전남',bac:true,tags:['삼보사찰','고찰','BAC인증'],desc:'아빠, 송광사는 한국 삼보사찰 중 승보사찰로 유명한 천년 고찰이에요 🪷 16국사를 배출한 수행 도량으로 나의 문화유산답사기에도 소개된 곳이에요. BAC 인증은 대웅보전 앞에서!'},
+  {id:11,name:'연곡사',region:'구례',dist:95,time:'1시간 30분',emoji:'🏔️',area:'전남',bac:true,tags:['지리산','통일신라','BAC인증'],desc:'엄마, 연곡사는 지리산 자락의 조용한 사찰로 동 승탑이 국보예요 🏔️ 화려하지 않지만 아름다운 승탑들이 인상적인 곳이에요. BAC 인증은 동 승탑 앞에서!'},
+  {id:12,name:'화엄사',region:'구례',dist:97,time:'1시간 35분',emoji:'🏔️',area:'전남',bac:true,tags:['지리산','화엄','BAC인증'],desc:'아빠, 화엄사는 지리산 노고단 아래 자리한 웅장한 사찰이에요 🏔️ 각황전은 국내 최대 규모의 불전 중 하나예요. BAC 인증은 각황전 앞에서!'},
+  {id:13,name:'향일암',region:'여수',dist:110,time:'1시간 40분',emoji:'🌅',area:'전남',bac:true,tags:['일출','관음도량','BAC인증'],desc:'엄마, 향일암은 바위 절벽 위에 지어진 신비로운 절이에요 🌅 해맞이 명소로 유명하고 좁은 바위 틈을 통과하는 재미도 있어요. BAC 인증은 대웅전 앞에서!'},
+  {id:14,name:'여수 진남관',region:'여수',dist:99,time:'1시간 35분',emoji:'⚓',area:'전남',bac:true,tags:['이순신','임진왜란','BAC인증'],desc:'아빠, 진남관은 이순신 장군이 지휘한 전라좌수영 본영이에요 ⚓ 국내 최대 규모의 단층 목조 건물이에요. BAC 인증은 유물전시관 앞에서!'},
+  {id:15,name:'암태도 기동삼거리',region:'신안',dist:115,time:'1시간 45분',emoji:'✊',area:'전남',bac:true,tags:['소작쟁의','근현대','BAC인증'],desc:'엄마, 암태도는 1920년대 소작쟁의가 일어난 역사적인 섬이에요 ✊ 나의 문화유산답사기에 소개된 근현대사의 현장이에요. BAC 인증은 벽화 앞에서!'},
+  {id:16,name:'징광사터',region:'광양',dist:101,time:'1시간 35분',emoji:'🗿',area:'전남',bac:true,tags:['통일신라','석탑','BAC인증'],desc:'아빠, 징광사지 삼층석탑은 통일신라 시대의 아름다운 석탑이에요 🗿 인적이 드문 호젓한 절터에서 만나는 고즈넉한 유산이에요. BAC 인증은 삼층석탑 앞에서!'},
+  {id:17,name:'대원사',region:'산청',dist:130,time:'1시간 50분',emoji:'🏔️',area:'경남',bac:true,tags:['지리산','다층석탑','BAC인증'],desc:'엄마, 대원사는 지리산 천왕봉 아래 자리한 아름다운 절이에요 🏔️ 계곡을 따라 올라가는 길이 정말 예쁜 곳이에요. BAC 인증은 다층석탑 앞에서!'},
+  {id:18,name:'쌍계사',region:'하동',dist:108,time:'1시간 40분',emoji:'🍵',area:'경남',bac:true,tags:['고찰','차문화','BAC인증'],desc:'아빠, 쌍계사는 봄 십리 벚꽃길이 정말 장관인 천년 고찰이에요 🍵 하동 녹차의 고장에 자리한 아름다운 사찰이에요. BAC 인증은 대웅전 앞에서!'},
+  {id:19,name:'하동 쌍계사 석문',region:'하동',dist:108,time:'1시간 40분',emoji:'🍵',area:'경남',bac:true,tags:['고찰','석문','BAC인증'],desc:'엄마, 쌍계사 석문은 최치원 선생이 새긴 글씨가 있는 유명한 바위문이에요 🍵 쌍계사 입구에 있으니 들어가면서 꼭 보세요. BAC 인증은 석문 앞에서!'},
+  {id:20,name:'농월정',region:'함양',dist:135,time:'1시간 50분',emoji:'🌊',area:'경남',bac:true,tags:['정자','화림동계곡','BAC인증'],desc:'아빠, 농월정은 함양 화림동계곡에 자리한 조선 시대 정자예요 🌊 맑은 계곡물과 너럭바위가 어우러진 풍경이 정말 아름다워요. BAC 인증은 정자 앞에서!'},
+  {id:21,name:'교동·송현동 가야고분군',region:'창녕',dist:160,time:'2시간',emoji:'⚱️',area:'경남',bac:true,tags:['세계유산','가야','BAC인증'],desc:'엄마, 창녕 가야고분군은 유네스코 세계문화유산이에요 ⚱️ 비화가야의 왕들이 잠든 거대한 고분들이 인상적이에요. BAC 인증은 창녕박물관 입구에서!'},
+  {id:22,name:'통도사',region:'양산',dist:185,time:'2시간 15분',emoji:'🪷',area:'경남',bac:true,tags:['삼보사찰','불보','BAC인증'],desc:'아빠, 통도사는 한국 삼보사찰 중 불보사찰이에요 🪷 부처님 진신사리를 모신 금강계단이 있어 대웅전에 불상이 없는 독특한 절이에요. BAC 인증은 대웅전 및 금강계단 앞에서!'},
+  {id:23,name:'범어사',region:'부산',dist:197,time:'2시간 20분',emoji:'🪷',area:'경남',bac:true,tags:['고찰','금정산','BAC인증'],desc:'엄마, 범어사는 금정산 자락의 신라 시대 고찰이에요 🪷 도심 속에 있지만 깊은 산사의 분위기를 간직한 아름다운 절이에요. BAC 인증은 대웅전 앞에서!'},
+  {id:24,name:'용궁사',region:'부산',dist:200,time:'2시간 20분',emoji:'🌊',area:'경남',bac:true,tags:['해동용궁사','바다절','BAC인증'],desc:'아빠, 해동용궁사는 바다 절벽 위에 자리한 독특한 절이에요 🌊 파도 소리와 함께하는 기도처로 유명하고 풍경이 정말 멋져요. BAC 인증은 대웅전 앞에서!'},
+  {id:25,name:'운문사',region:'청도',dist:210,time:'2시간 30분',emoji:'🌲',area:'경북',bac:true,tags:['비구니사찰','처진소나무','BAC인증'],desc:'엄마, 운문사는 전국 최대 비구니 사찰로 처진소나무가 정말 유명해요 🌲 단정하고 아름다운 사찰 분위기가 인상적이에요. BAC 인증은 처진소나무 앞에서!'},
+  {id:26,name:'동화사',region:'대구',dist:205,time:'2시간 25분',emoji:'🏔️',area:'경북',bac:true,tags:['팔공산','고찰','BAC인증'],desc:'아빠, 동화사는 팔공산 자락의 신라 시대 고찰이에요 🏔️ 통일약사여래대불이 웅장하고 단풍이 아름다운 곳이에요. BAC 인증은 대웅전 앞에서!'},
+  {id:27,name:'용연사',region:'대구',dist:207,time:'2시간 25분',emoji:'🪷',area:'경북',bac:true,tags:['팔공산','석조계단','BAC인증'],desc:'엄마, 용연사는 팔공산에 자리한 조용한 고찰로 석조계단이 국보예요 🪷 인적이 드물어 호젓하게 즐길 수 있는 숨겨진 명소예요. BAC 인증은 석조계단 앞에서!'},
+  {id:28,name:'은해사',region:'영천',dist:230,time:'2시간 40분',emoji:'🌸',area:'경북',bac:true,tags:['고찰','팔공산','BAC인증'],desc:'아빠, 은해사는 팔공산 자락의 아름다운 사찰로 봄 벚꽃이 장관이에요 🌸 은빛 안개가 자욱하다 하여 은해사라는 이름이 붙었어요. BAC 인증은 대웅전 앞에서!'},
+  {id:29,name:'직지사',region:'김천',dist:205,time:'2시간 25분',emoji:'🪷',area:'경북',bac:true,tags:['고찰','황악산','BAC인증'],desc:'엄마, 직지사는 황악산 자락의 신라 시대 고찰이에요 🪷 나라를 구한 사명대사가 출가한 절로 유명해요. BAC 인증은 대웅전 앞에서!'},
+  {id:30,name:'장육사',region:'영덕',dist:270,time:'2시간 55분',emoji:'🪷',area:'경북',bac:true,tags:['고찰','BAC인증'],desc:'아빠, 장육사는 영덕 산속에 자리한 소박하고 아름다운 절이에요 🪷 나의 문화유산답사기에 소개된 숨겨진 명찰이에요. BAC 인증은 대웅전 앞에서!'},
+  {id:31,name:'불국사',region:'경주',dist:247,time:'2시간 45분',emoji:'🛕',area:'경북',bac:true,tags:['세계유산','신라','BAC인증'],desc:'엄마, 불국사는 신라 불교문화의 최고 걸작 유네스코 세계문화유산이에요 🛕 다보탑·석가탑이 모두 국보예요. BAC 인증은 다보탑 앞에서!'},
+  {id:32,name:'감은사터',region:'경주',dist:255,time:'2시간 50분',emoji:'🌊',area:'경북',bac:true,tags:['신라','삼층석탑','BAC인증'],desc:'아빠, 감은사터는 문무왕이 왜구를 물리치고자 지은 절의 터예요 🌊 동·서 삼층석탑이 바다를 향해 서 있는 모습이 웅장해요. BAC 인증은 동·서삼층석탑 앞에서!'},
+  {id:33,name:'문무대왕릉',region:'경주',dist:257,time:'2시간 50분',emoji:'🌊',area:'경북',bac:true,tags:['신라','수중릉','BAC인증'],desc:'엄마, 문무대왕릉은 세계 유일의 수중 왕릉이에요 🌊 죽어서도 용이 되어 나라를 지키겠다는 문무왕의 유언이 담긴 곳이에요. BAC 인증은 앞 백사장에서!'},
+  {id:34,name:'첨성대',region:'경주',dist:245,time:'2시간 45분',emoji:'⭐',area:'경북',bac:true,tags:['신라','천문대','BAC인증'],desc:'아빠, 첨성대는 동양에서 가장 오래된 천문 관측대예요 ⭐ 신라 선덕여왕 때 만들어진 1400년 된 역사 유물이에요. BAC 인증은 첨성대 정면 앞에서!'},
+  {id:35,name:'옥산서원',region:'경주',dist:260,time:'2시간 55분',emoji:'📜',area:'경북',bac:true,tags:['세계유산','서원','회재','BAC인증'],desc:'엄마, 옥산서원은 유네스코 세계문화유산으로 회재 이언적 선생을 기리는 서원이에요 📜 계곡 옆에 자리한 풍경이 정말 아름다워요. BAC 인증은 구인당 앞에서!'},
+  {id:36,name:'양동마을',region:'경주',dist:260,time:'2시간 55분',emoji:'🏘️',area:'경북',bac:true,tags:['세계유산','민속마을','BAC인증'],desc:'아빠, 양동마을은 유네스코 세계문화유산인 500년 역사의 살아있는 조선 마을이에요 🏘️ BAC 인증은 마을 입구 안내판 앞에서!'},
+  {id:37,name:'도산서원',region:'안동',dist:258,time:'2시간 55분',emoji:'🎓',area:'경북',bac:true,tags:['세계유산','이황','서원','BAC인증'],desc:'엄마, 도산서원은 퇴계 이황 선생이 세운 유네스코 세계문화유산이에요 🎓 옛 천 원짜리 지폐에 그려진 바로 그 곳이에요. BAC 인증은 전교당 앞에서!'},
+  {id:38,name:'병산서원',region:'안동',dist:260,time:'2시간 55분',emoji:'🏞️',area:'경북',bac:true,tags:['세계유산','서원','류성룡','BAC인증'],desc:'아빠, 병산서원은 낙동강을 굽어보는 만대루 풍경이 일품인 유네스코 세계문화유산이에요 🏞️ BAC 인증은 만대루 앞에서!'},
+  {id:39,name:'안동 하회마을',region:'안동',dist:252,time:'2시간 50분',emoji:'🎭',area:'경북',bac:true,tags:['세계유산','탈춤','BAC인증'],desc:'엄마, 하회마을은 낙동강이 S자로 감싸는 유네스코 세계문화유산이에요 🎭 하회별신굿탈놀이도 꼭 보세요. BAC 인증은 하회마을 장승 앞에서!'},
+  {id:40,name:'봉정사',region:'안동',dist:255,time:'2시간 50분',emoji:'🪷',area:'경북',bac:true,tags:['세계유산','산사','극락전','BAC인증'],desc:'아빠, 봉정사 극락전은 우리나라에서 가장 오래된 목조 건물이에요 🪷 유네스코 세계문화유산 산사 중 하나예요. BAC 인증은 극락전 앞에서!'},
+  {id:41,name:'부석사',region:'영주',dist:263,time:'3시간',emoji:'🌅',area:'경북',bac:true,tags:['세계유산','무량수전','BAC인증'],desc:'엄마, 부석사 무량수전에서 바라보는 소백산맥 풍경이 우리나라 최고의 절경 중 하나예요 🌅 유네스코 세계문화유산 산사예요. BAC 인증은 무량수전 앞에서!'},
+  {id:42,name:'소수서원',region:'영주',dist:262,time:'3시간',emoji:'📖',area:'경북',bac:true,tags:['세계유산','서원','최초','BAC인증'],desc:'아빠, 소수서원은 우리나라 최초의 사액서원이에요 📖 유네스코 세계문화유산으로 조선 성리학의 출발점이 된 곳이에요. BAC 인증은 강학당 앞에서!'},
+  {id:43,name:'법주사',region:'보은',dist:195,time:'2시간 20분',emoji:'🙏',area:'충북',bac:true,tags:['속리산','금동미륵대불','BAC인증'],desc:'엄마, 법주사는 속리산 자락의 신라 시대 고찰로 금동미륵대불이 웅장해요 🙏 국보 팔상전도 꼭 보세요. BAC 인증은 금동미륵대불 앞에서!'},
+  {id:44,name:'보은 삼년산성',region:'보은',dist:195,time:'2시간 20분',emoji:'🧱',area:'충북',bac:true,tags:['신라','산성','BAC인증'],desc:'아빠, 삼년산성은 3년에 걸쳐 쌓았다는 신라 시대 석성이에요 🧱 돌을 쌓는 기술이 정교하고 보존 상태가 좋아요. BAC 인증은 서문지에서!'},
+  {id:45,name:'마곡사',region:'공주',dist:158,time:'2시간 5분',emoji:'🪷',area:'충남',bac:true,tags:['세계유산','산사','BAC인증'],desc:'엄마, 마곡사는 유네스코 세계문화유산 산사예요 🪷 김구 선생이 일제 피신 시절 머문 곳으로 유명해요. BAC 인증은 대웅보전 앞에서!'},
+  {id:46,name:'무령왕릉',region:'공주',dist:160,time:'2시간 5분',emoji:'👑',area:'충남',bac:true,tags:['세계유산','백제','BAC인증'],desc:'아빠, 무령왕릉은 유네스코 세계문화유산으로 백제 무령왕의 무덤이에요 👑 발굴 당시 4600여 점 유물이 쏟아졌어요. BAC 인증은 입구 석수 상 앞에서!'},
+  {id:47,name:'수덕사',region:'예산',dist:172,time:'2시간 10분',emoji:'🪷',area:'충남',bac:true,tags:['고려','대웅전','BAC인증'],desc:'엄마, 수덕사 대웅전은 고려 시대 목조 건물의 아름다움을 잘 보여주는 국보예요 🪷 덕숭산 자락의 고즈넉한 사찰이에요. BAC 인증은 대웅전 앞에서!'},
+  {id:48,name:'태안 마애삼존불',region:'태안',dist:210,time:'2시간 30분',emoji:'🗿',area:'충남',bac:true,tags:['백제','마애불','BAC인증'],desc:'아빠, 태안 마애삼존불은 바위에 새긴 백제 시대의 아름다운 불상이에요 🗿 온화한 미소가 인상적인 귀중한 문화유산이에요. BAC 인증은 마애삼존불입상 앞에서!'},
+  {id:49,name:'개심사',region:'서산',dist:215,time:'2시간 35분',emoji:'🌸',area:'충남',bac:true,tags:['고찰','배흘림기둥','BAC인증'],desc:'엄마, 개심사는 배흘림기둥이 아름다운 고려 시대 고찰이에요 🌸 봄 청벚꽃이 정말 유명한 숨겨진 명소예요. BAC 인증은 안양루 앞에서!'},
+  {id:50,name:'외암민속마을',region:'아산',dist:195,time:'2시간 20분',emoji:'🏘️',area:'충남',bac:true,tags:['민속마을','조선','BAC인증'],desc:'아빠, 외암민속마을은 조선 시대 양반마을의 모습을 그대로 간직한 곳이에요 🏘️ 돌담길과 초가집이 어우러진 아름다운 전통 마을이에요. BAC 인증은 매표소 앞에서!'},
+  {id:51,name:'이순신장군 유적지',region:'아산',dist:193,time:'2시간 20분',emoji:'⚔️',area:'충남',bac:true,tags:['이순신','현충사','BAC인증'],desc:'엄마, 현충사는 이순신 장군의 영정과 유품을 모신 사당이에요 ⚔️ 장군의 위대한 정신을 직접 느낄 수 있는 곳이에요. BAC 인증은 충무문 앞에서!'},
+  {id:52,name:'정림사지',region:'부여',dist:175,time:'2시간 15분',emoji:'🗼',area:'충남',bac:true,tags:['세계유산','백제','BAC인증'],desc:'아빠, 정림사지 오층석탑은 백제 석탑의 걸작이에요 🗼 유네스코 세계문화유산으로 천 년을 꿋꿋이 서 있어요. BAC 인증은 오층석탑 앞에서!'},
+  {id:53,name:'부소산성',region:'부여',dist:177,time:'2시간 20분',emoji:'🌲',area:'충남',bac:true,tags:['세계유산','백제','낙화암','BAC인증'],desc:'엄마, 부소산성 낙화암에서 궁녀들이 백마강으로 몸을 던진 슬픈 역사가 있어요 🌲 유네스코 세계문화유산이에요. BAC 인증은 사비문 앞에서!'},
+  {id:54,name:'백제군사박물관',region:'논산',dist:157,time:'2시간 5분',emoji:'⚔️',area:'충남',bac:true,tags:['계백','백제','BAC인증'],desc:'아빠, 백제군사박물관에는 황산벌 전투의 영웅 계백 장군의 동상이 있어요 ⚔️ 백제 군사 문화를 한눈에 볼 수 있는 곳이에요. BAC 인증은 계백장군 동상 앞에서!'},
+  {id:55,name:'도동서원',region:'달성',dist:200,time:'2시간 20분',emoji:'📜',area:'경북',bac:true,tags:['세계유산','서원','한훤당','BAC인증'],desc:'엄마, 도동서원은 유네스코 세계문화유산으로 한훤당 김굉필 선생을 기리는 서원이에요 📜 낙동강 절벽 위에 자리한 경관이 아름다워요. BAC 인증은 수월루 앞에서!'},
+  {id:56,name:'전주 경기전',region:'전주',dist:86,time:'1시간 25분',emoji:'🏯',area:'전북',bac:true,tags:['조선태조','어진','BAC인증'],desc:'아빠, 경기전은 조선 태조 이성계의 어진을 모신 곳이에요 🏯 전주 한옥마을 중심에 있어서 한옥마을 여행과 함께 즐기기 좋아요. BAC 인증은 정전 앞에서!'},
+  {id:57,name:'내소사',region:'부안',dist:95,time:'1시간 30분',emoji:'🌲',area:'전북',bac:true,tags:['전나무숲길','고찰','BAC인증'],desc:'엄마, 내소사는 전나무 숲길이 정말 아름다운 고찰이에요 🌲 대웅보전의 꽃살문이 국보로 정교한 아름다움이 일품이에요. BAC 인증은 대웅보전 앞에서!'},
+  {id:58,name:'개암사',region:'부안',dist:97,time:'1시간 30분',emoji:'🏔️',area:'전북',bac:true,tags:['고찰','우금산성','BAC인증'],desc:'아빠, 개암사는 변산반도 우금산성 아래 자리한 조용한 고찰이에요 🏔️ 대웅보전의 아름다운 단청이 인상적이에요. BAC 인증은 대웅보전 앞에서!'},
+  {id:59,name:'선운사',region:'고창',dist:72,time:'1시간 10분',emoji:'🌸',area:'전북',bac:true,tags:['고찰','동백','BAC인증'],desc:'엄마, 선운사는 봄 동백꽃이 정말 장관인 천년 고찰이에요 🌸 가을 꽃무릇도 유명해요. BAC 인증은 대웅보전 앞에서!'},
+  {id:60,name:'미륵사터',region:'익산',dist:95,time:'1시간 30분',emoji:'🏰',area:'전북',bac:true,tags:['세계유산','백제','BAC인증'],desc:'아빠, 미륵사지는 유네스코 세계문화유산으로 백제 최대 사찰의 터예요 🏰 동양 최대 석탑이 있어요. BAC 인증은 석탑 앞에서!'},
+  {id:61,name:'인드라망',region:'남원',dist:108,time:'1시간 40분',emoji:'🙏',area:'전북',bac:true,tags:['실상사','지리산','BAC인증'],desc:'엄마, 실상사는 지리산 자락에 자리한 신라 시대 고찰이에요 🙏 인드라망 생명공동체 운동의 중심지로도 유명해요. BAC 인증은 대웅전 앞에서!'},
+  {id:62,name:'대조사',region:'부여',dist:173,time:'2시간 10분',emoji:'🗿',area:'충남',bac:true,tags:['석조미륵보살','고려','BAC인증'],desc:'아빠, 대조사 석조미륵보살상은 높이 10m가 넘는 고려 시대 거대 석불이에요 🗿 작은 절이지만 거대한 석불이 압도적이에요. BAC 인증은 석조미륵보살상 안내판 앞에서!'},
+  {id:63,name:'보석사',region:'논산',dist:160,time:'2시간 5분',emoji:'🌳',area:'충남',bac:true,tags:['은행나무','고찰','BAC인증'],desc:'엄마, 보석사 은행나무는 천 년이 넘은 거대한 나무예요 🌳 가을 단풍이 들면 황금빛으로 물드는 장관이 펼쳐져요. BAC 인증은 은행나무 앞에서!'},
+  {id:64,name:'전등사',region:'강화',dist:330,time:'3시간 30분',emoji:'🪷',area:'경기',bac:true,tags:['고찰','강화도','BAC인증'],desc:'아빠, 전등사는 우리나라에서 가장 오래된 고찰 중 하나예요 🪷 강화도에 있어서 강화 역사 여행과 함께 즐기기 좋아요. BAC 인증은 대웅보전 앞에서!'},
+  {id:65,name:'독립기념관',region:'천안',dist:190,time:'2시간 20분',emoji:'🇰🇷',area:'충남',bac:true,tags:['독립운동','근현대','BAC인증'],desc:'엄마, 독립기념관은 일제강점기 독립운동의 역사를 기리는 곳이에요 🇰🇷 겨레의 탑이 웅장하고 다양한 전시관이 있어요. BAC 인증은 겨레의 집 앞에서!'},
+  {id:66,name:'제암리 3.1운동 순국유적지',region:'화성',dist:295,time:'3시간 10분',emoji:'✊',area:'경기',bac:true,tags:['3.1운동','근현대','BAC인증'],desc:'아빠, 제암리는 3.1운동 때 일본군이 마을 주민을 학살한 역사적인 곳이에요 ✊ 순국한 분들의 넋을 기리는 추모의 공간이에요. BAC 인증은 순국기념관 앞에서!'},
+  {id:67,name:'세종대왕릉',region:'여주',dist:320,time:'3시간 20분',emoji:'👑',area:'경기',bac:true,tags:['세계유산','조선왕릉','BAC인증'],desc:'엄마, 영릉은 한글을 만드신 세종대왕의 왕릉이에요 👑 유네스코 세계문화유산 조선왕릉 중 하나예요. BAC 인증은 정자각 앞에서!'},
+  {id:68,name:'아차산 보루',region:'서울',dist:340,time:'3시간 40분',emoji:'🏔️',area:'서울',bac:true,tags:['고구려','보루','BAC인증'],desc:'아빠, 아차산 보루는 고구려가 한강 유역을 지키던 군사 요새예요 🏔️ 서울 도심에서 고구려 역사를 만날 수 있는 특별한 곳이에요. BAC 인증은 4보루 성벽 앞에서!'},
+  {id:69,name:'숭례문',region:'서울',dist:340,time:'3시간 40분',emoji:'🏯',area:'서울',bac:true,tags:['조선','국보','BAC인증'],desc:'엄마, 숭례문은 조선 시대 한양의 정문이었던 국보 1호예요 🏯 600년이 넘은 역사를 간직한 서울의 상징이에요. BAC 인증은 숭례문 정면 앞에서!'},
+  {id:70,name:'창덕궁',region:'서울',dist:341,time:'3시간 40분',emoji:'🌿',area:'서울',bac:true,tags:['세계유산','궁궐','BAC인증'],desc:'아빠, 창덕궁은 유네스코 세계문화유산으로 자연과 어우러진 후원이 아름다운 조선 궁궐이에요 🌿 BAC 인증은 인정전 앞에서!'},
+  {id:71,name:'만해마을',region:'인제',dist:370,time:'4시간',emoji:'📿',area:'강원',bac:true,tags:['만해한용운','근현대','BAC인증'],desc:'엄마, 만해마을은 독립운동가이자 시인인 만해 한용운 선생을 기리는 곳이에요 📿 백담사 인근에 자리한 문학 공간이에요. BAC 인증은 만해사 앞에서!'},
+  {id:72,name:'상원사',region:'평창',dist:355,time:'3시간 55분',emoji:'🔔',area:'강원',bac:true,tags:['오대산','문수동자','BAC인증'],desc:'아빠, 상원사에는 세조가 목욕하다 문수동자를 만났다는 전설이 있어요 🔔 우리나라에서 가장 오래된 동종이 있는 고찰이에요. BAC 인증은 문수전 앞에서!'},
+  {id:73,name:'월정사',region:'평창',dist:353,time:'3시간 55분',emoji:'🌲',area:'강원',bac:true,tags:['오대산','전나무숲','BAC인증'],desc:'엄마, 월정사는 전나무 숲길이 정말 아름다운 오대산의 고찰이에요 🌲 팔각구층석탑이 아름답고 겨울 설경이 특히 멋져요. BAC 인증은 팔각구층석탑 앞에서!'},
+  {id:74,name:'평창 무이예술관',region:'평창',dist:350,time:'3시간 50분',emoji:'🎨',area:'강원',bac:true,tags:['근현대미술','이중섭','BAC인증'],desc:'아빠, 무이예술관은 이중섭 화백 등 근현대 미술의 흔적을 만날 수 있는 예술 공간이에요 🎨 BAC 인증은 입구에서!'},
+  {id:75,name:'청평사',region:'춘천',dist:342,time:'3시간 40분',emoji:'🏔️',area:'강원',bac:true,tags:['고찰','소양호','BAC인증'],desc:'엄마, 청평사는 소양호 배를 타고 들어가는 특별한 절이에요 🏔️ 고려 시대 회전문이 아름답고 계곡도 멋져요. BAC 인증은 회전문 앞에서!'},
+  {id:76,name:'용소폭포',region:'평창',dist:355,time:'3시간 55분',emoji:'💧',area:'강원',bac:true,tags:['폭포','자연','BAC인증'],desc:'아빠, 용소폭포는 이효석 소설 메밀꽃 필 무렵의 배경이 된 아름다운 폭포예요 💧 봉평 메밀꽃 축제와 함께 즐기면 더 좋아요. BAC 인증은 안내판 앞에서!'},
+  {id:77,name:'낙산사',region:'양양',dist:390,time:'4시간 10분',emoji:'🌊',area:'강원',bac:true,tags:['해수관음','고찰','BAC인증'],desc:'엄마, 낙산사는 동해 바다를 굽어보는 해수관음상이 유명한 고찰이에요 🌊 의상대에서 바라보는 일출이 정말 아름다워요. BAC 인증은 해수관음상 앞에서!'},
+  {id:78,name:'고석정',region:'철원',dist:380,time:'4시간',emoji:'🏞️',area:'강원',bac:true,tags:['한탄강','현무암','BAC인증'],desc:'아빠, 고석정은 한탄강 현무암 절벽 위에 자리한 아름다운 정자예요 🏞️ 임꺽정이 활동했다는 전설이 있는 곳이에요. BAC 인증은 고석루 앞에서!'},
+  {id:79,name:'비둘기낭폭포',region:'포천',dist:355,time:'3시간 55분',emoji:'💧',area:'경기',bac:true,tags:['한탄강','현무암','BAC인증'],desc:'엄마, 비둘기낭폭포는 현무암 절벽이 만들어낸 신비로운 폭포예요 💧 한탄강 세계지질공원의 대표 명소예요. BAC 인증은 안내판 앞에서!'},
+  {id:80,name:'환선굴',region:'삼척',dist:400,time:'4시간 20분',emoji:'🕳️',area:'강원',bac:true,tags:['석회동굴','자연','BAC인증'],desc:'아빠, 환선굴은 우리나라에서 가장 큰 석회동굴이에요 🕳️ 1.6km 동굴 안에 종유석과 석순이 가득한 신비로운 세계예요. BAC 인증은 입구 안내판 앞에서!'},
+  {id:81,name:'유엔기념공원',region:'부산',dist:200,time:'2시간 20분',emoji:'🕊️',area:'경남',bac:true,tags:['6.25전쟁','근현대','BAC인증'],desc:'엄마, 유엔기념공원은 6.25전쟁에서 순국한 유엔군 용사들이 잠든 세계 유일의 유엔군 묘지예요 🕊️ 엄숙하고 감동적인 곳이에요. BAC 인증은 추모명비 앞에서!'},
+  {id:82,name:'거창양민학살 희생자 추모공원',region:'거창',dist:148,time:'1시간 55분',emoji:'🕊️',area:'경남',bac:true,tags:['근현대','6.25','BAC인증'],desc:'아빠, 거창 사건은 6.25 전쟁 중 억울하게 희생된 민간인을 기리는 곳이에요 🕊️ 역사의 아픔을 기억하는 소중한 공간이에요. BAC 인증은 위패봉안각 앞에서!'},
+  {id:83,name:'무섬마을',region:'영주',dist:265,time:'3시간',emoji:'🏘️',area:'경북',bac:true,tags:['외나무다리','민속마을','BAC인증'],desc:'엄마, 무섬마을은 낙동강 지류가 마을을 섬처럼 감싸는 아름다운 전통 마을이에요 🏘️ 외나무다리 건너기가 유명해요. BAC 인증은 수도교 입구에서!'},
+  {id:84,name:'영국사',region:'영동',dist:200,time:'2시간 20분',emoji:'🌳',area:'충북',bac:true,tags:['은행나무','고찰','BAC인증'],desc:'아빠, 영국사 은행나무는 수령 1000년이 넘는 거대한 나무예요 🌳 가을 단풍이 들면 정말 장관이에요. BAC 인증은 은행나무 앞에서!'},
+  {id:85,name:'용문사',region:'양평',dist:330,time:'3시간 30분',emoji:'🌳',area:'경기',bac:true,tags:['은행나무','고찰','BAC인증'],desc:'엄마, 용문사 은행나무는 수령 1100년이 넘는 우리나라에서 가장 오래된 은행나무예요 🌳 높이 42m의 장관이에요. BAC 인증은 은행나무 앞에서!'},
+  {id:86,name:'오죽헌',region:'강릉',dist:393,time:'4시간 15분',emoji:'📝',area:'강원',bac:true,tags:['신사임당','이이','BAC인증'],desc:'아빠, 오죽헌은 신사임당과 율곡 이이 선생이 태어난 곳이에요 📝 옛 오만 원권 지폐에 신사임당이 있는 바로 그 집이에요. BAC 인증은 몽룡실 앞에서!'},
+  {id:87,name:'유필암',region:'공주',dist:157,time:'2시간 5분',emoji:'🧘',area:'충남',bac:true,tags:['마곡사','암자','BAC인증'],desc:'엄마, 유필암은 마곡사 산내 암자로 조용하고 아름다운 곳이에요 🧘 나의 문화유산답사기에 소개된 숨겨진 명소예요. BAC 인증은 현판 앞에서!'},
+  {id:88,name:'정방사',region:'영월',dist:340,time:'3시간 40분',emoji:'🏔️',area:'강원',bac:true,tags:['법흥사','선돌','BAC인증'],desc:'아빠, 정방사는 영월 산속 절벽 위에 자리한 신비로운 암자예요 🏔️ 단종이 유배된 영월의 역사와 함께 돌아보기 좋아요. BAC 인증은 대웅전 앞에서!'},
+  {id:89,name:'정토사',region:'충주',dist:220,time:'2시간 35분',emoji:'🪷',area:'충북',bac:true,tags:['고찰','충주호','BAC인증'],desc:'엄마, 정토사는 충주호 인근의 아름다운 고찰이에요 🪷 주변 자연 경관이 뛰어난 조용한 사찰이에요. BAC 인증은 대웅전 앞에서!'},
+  {id:90,name:'창령사터',region:'원주',dist:320,time:'3시간 20분',emoji:'🗿',area:'강원',bac:true,tags:['오백나한상','고려','BAC인증'],desc:'아빠, 창령사지 오백나한상은 고려 시대에 만들어진 독특한 표정의 나한상들이에요 🗿 제각각 다른 표정이 재미있고 감동적이에요. BAC 인증은 오백나한상 안내판 앞에서!'},
+  {id:91,name:'너븐숭이4.3기념관',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🕊️',area:'제주',bac:true,tags:['제주4.3','근현대','BAC인증'],desc:'엄마, 너븐숭이는 제주 4.3 사건 때 가장 많은 희생자가 난 북촌리에 있는 추모 공간이에요 🕊️ 제주의 아픈 역사를 기억하는 중요한 곳이에요. BAC 인증은 4·3 위령비 앞에서!'},
+  {id:92,name:'관덕정',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🏯',area:'제주',bac:true,tags:['조선','제주목','BAC인증'],desc:'아빠, 관덕정은 제주에서 가장 오래된 건물이에요 🏯 조선 시대 군사훈련장이었으며 제주 역사의 중심지예요. BAC 인증은 현판 앞에서!'},
+  {id:93,name:'성산일출봉',region:'제주',dist:0,time:'1시간(비행기)',emoji:'🌋',area:'제주',bac:true,tags:['세계유산','일출','BAC인증'],desc:'엄마, 성산일출봉은 유네스코 세계자연유산으로 새벽 일출이 정말 장관이에요 🌋 BAC 인증은 정상석 앞에서!'},
+  {id:94,name:'정토사',region:'충주',dist:220,time:'2시간 35분',emoji:'🪷',area:'충북',bac:true,tags:['고찰','BAC인증'],desc:'아빠, 정토사는 충주 산속의 조용한 고찰이에요. BAC 인증은 대웅전 앞에서!'},
+  {id:95,name:'영국사',region:'영동',dist:200,time:'2시간 20분',emoji:'🌳',area:'충북',bac:true,tags:['은행나무','BAC인증'],desc:'엄마, 영국사 은행나무는 수령 1000년이 넘는 거목이에요. BAC 인증은 은행나무 앞에서!'},
+  {id:96,name:'해인사',region:'합천',dist:155,time:'2시간',emoji:'🪷',area:'경남',bac:true,tags:['세계유산','팔만대장경','BAC인증'],desc:'엄마, 해인사는 팔만대장경을 보관한 유네스코 세계문화유산이에요 🪷 가야산 단풍도 정말 유명해요. BAC 인증은 대장경판전 앞에서!'},
+  {id:97,name:'경복궁',region:'서울',dist:340,time:'3시간 40분',emoji:'🏯',area:'서울',bac:true,tags:['궁궐','조선','BAC인증'],desc:'아빠, 경복궁은 조선 왕조 500년의 정궁이에요 🏯 수문장 교대식도 꼭 보세요. BAC 인증은 경회루 앞에서!'},
+  {id:98,name:'경주 대릉원',region:'경주',dist:245,time:'2시간 45분',emoji:'🌅',area:'경북',bac:true,tags:['신라','고분','BAC인증'],desc:'엄마, 대릉원은 신라 왕들의 거대한 고분이 모인 공원이에요 🌅 천마총에서 발굴된 천마도가 유명해요. BAC 인증은 미추왕릉 봉분 앞에서!'},
+  {id:99,name:'대원사',region:'산청',dist:130,time:'1시간 50분',emoji:'🏔️',area:'경남',bac:true,tags:['지리산','다층석탑','BAC인증'],desc:'아빠, 대원사는 지리산 천왕봉 아래 자리한 아름다운 절이에요 🏔️ BAC 인증은 다층석탑 앞에서!'},
+  {id:100,name:'보길도 세연정',region:'완도',dist:120,time:'1시간 50분',emoji:'🌊',area:'전남',bac:true,tags:['윤선도원림','BAC인증'],desc:'엄마, 보길도 윤선도 원림의 세연정은 조선 최고의 정원 중 하나예요 🌊 BAC 인증은 세연정 앞에서!'},
+];
+
+const AREAS = ['전체','전남','전북','경남','경북','충남','경기','서울','제주'];
+const COUPON_MILESTONES = [50, 100, 150, 200, 250, 300, 350, 400];
+
+// ── 상태 ──────────────────────────────────────────────
+let state = {points:0, visited:{}, comments:{}, coupons:[]};
+let activeArea = '전체';
+let pendingPhoto = null;
+let lastAIText = '';
+let speaking = false;
+
+// ── Firebase 실시간 동기화 ─────────────────────────────
+const docRef = doc(db, 'shared', 'data');
+
+onSnapshot(docRef, snap => {
+  if (snap.exists()) {
+    const remote = snap.data();
+    state = {...state, ...remote};
+    renderAll();
+  }
+});
+
+async function saveToFirebase() {
+  try {
+    await setDoc(docRef, state, {merge: true});
+  } catch(e) {
+    console.error('Firebase 저장 오류:', e);
+    showToast('저장 중 오류가 발생했어요.');
+  }
+}
+
+
+function updateBACProgress() {
+  const total = PLACES.filter(p=>p.bac).length;
+  const done = Object.keys(state.visited||{}).filter(id => {
+    const p = PLACES.find(x=>x.id==id);
+    return p && p.bac;
+  }).length;
+  const el = document.getElementById('bac-count');
+  const bar = document.getElementById('bac-bar');
+  if(el) el.textContent = done + ' / ' + total;
+  if(bar) bar.style.width = Math.round((done/total)*100) + '%';
+}
+
+function renderAll() {
+  renderHeader();
+  renderPlaces();
+  renderLog();
+  renderCoupon();
+  updateBACProgress();
+}
+
+// ── 네비게이션 ─────────────────────────────────────────
+window.go = function(id) {
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('scr-'+id).classList.add('on');
+  document.getElementById('nb-'+id).classList.add('on');
+};
+
+// ── 헤더 & 포인트 ──────────────────────────────────────
+function renderHeader() {
+  const pts = state.points || 0;
+  document.getElementById('hdr-pt').textContent = pts;
+  document.getElementById('pts-big').textContent = pts;
+  const nextMilestone = COUPON_MILESTONES.find(m => {
+    const count = Math.floor(pts / m);
+    const issued = (state.coupons || []).filter(c => c.milestone === m).length;
+    return pts < m * (issued + 1);
+  }) || COUPON_MILESTONES[0];
+  const prev = (() => {
+    const idx = COUPON_MILESTONES.indexOf(nextMilestone);
+    if (idx <= 0) return 0;
+    return COUPON_MILESTONES[idx-1];
+  })();
+  const pct = Math.round(((pts - prev) / (nextMilestone - prev)) * 100);
+  document.getElementById('hdr-bar').style.width = Math.min(pct, 100) + '%';
+  document.getElementById('hdr-next-label').textContent = `${nextMilestone - pts}pt 더 필요`;
+  document.getElementById('pts-next').textContent = `유산 1곳 방문 = 10pt · 다음 소원쿠폰까지 ${nextMilestone - pts}pt 남았어요!`;
+}
+
+// ── 필터 & 장소 목록 ───────────────────────────────────
+function renderFilters() {
+  document.getElementById('filter-row').innerHTML = AREAS.map(a =>
+    `<button class="fb${a===activeArea?' on':''}" onclick="setArea('${a}')">${a}</button>`
+  ).join('');
+}
+window.setArea = function(a) { activeArea = a; renderFilters(); renderPlaces(); };
+
+function renderPlaces() {
+  const el = document.getElementById('place-list');
+  const list = PLACES.filter(p => activeArea==='전체' || p.area===activeArea).sort((a,b) => a.dist-b.dist);
+  el.innerHTML = list.map(p => {
+    const v = (state.visited||{})[p.id];
+    return `<div class="place-card">
+      <div class="pc-top">
+        <div class="pc-emoji">${p.emoji}</div>
+        <div class="pc-info">
+          <div class="pc-name">${p.name}</div>
+          <div class="pc-meta"><i class="ti ti-car" style="font-size:13px"></i> ${p.dist>0?p.dist+'km · ':''}약 ${p.time}</div>
+          <div class="pc-tags">${p.tags.map(t=>t==='BAC인증'?`<span class="bactag">🏔️BAC</span>`:`<span class="tag">${t}</span>`).join('')}${v?`<span class="vtag"><i class="ti ti-check" style="font-size:12px"></i> 방문완료</span>`:''}</div>
+        </div>
+      </div>
+      <div class="pc-actions">
+        <button class="pc-btn" onclick="openNavi(${p.id})"><i class="ti ti-navigation"></i>네비</button>
+        <button class="pc-btn" onclick="openAIfor(${p.id})"><i class="ti ti-sparkles"></i>해설</button>
+        <button class="pc-btn${v?' done':''}" onclick="${v?'':' markVisit('+p.id+')'}"><i class="ti ti-${v?'check':'circle-check'}"></i>${v?'완료':'방문완료'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── 네비 연결 ──────────────────────────────────────────
+window.openNavi = function(id) {
+  const p = PLACES.find(x=>x.id===id);
+  const q = encodeURIComponent(p.name);
+  showModal(`<div class="modal">
+    <div class="modal-title"><i class="ti ti-navigation" style="color:var(--brand)"></i> ${p.name} 길찾기</div>
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <a href="tmap://search?name=${q}" style="display:block;padding:15px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:18px;text-align:center;color:var(--text1);text-decoration:none;background:var(--bg2);font-family:'Noto Sans KR',sans-serif;">T map으로 길찾기</a>
+      <a href="kakaomap://search?q=${q}" style="display:block;padding:15px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:18px;text-align:center;color:var(--text1);text-decoration:none;background:var(--bg2);font-family:'Noto Sans KR',sans-serif;">카카오맵으로 길찾기</a>
+      <a href="https://map.naver.com/v5/search/${q}" target="_blank" style="display:block;padding:15px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:18px;text-align:center;color:var(--text1);text-decoration:none;background:var(--bg2);font-family:'Noto Sans KR',sans-serif;">웹 지도로 보기</a>
+    </div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="closeModal()">닫기</button></div>
+  </div>`);
+};
+
+// ── 방문 기록 ──────────────────────────────────────────
+window.markVisit = function(id) {
+  const p = PLACES.find(x=>x.id===id);
+  pendingPhoto = null;
+  showModal(`<div class="modal">
+    <div class="modal-title">${p.emoji} ${p.name} 방문 기록</div>
+    <div class="photo-box" id="photo-box" onclick="document.getElementById('photo-file').click()">
+      <i class="ti ti-camera"></i>
+      <span class="ph-label">사진 한 장 찍어보세요 (선택)</span>
+    </div>
+    <input type="file" id="photo-file" accept="image/*" capture="environment" style="display:none" onchange="previewPhoto(this)"/>
+    <input type="text" id="mv-memo" placeholder="오늘 다녀온 소감 한 줄 (선택)"/>
+    <div style="font-size:15px;color:var(--text3);margin-bottom:4px;">방문하면 10pt가 적립돼요!</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-ok" onclick="confirmVisit(${id})">방문 완료 ✓</button>
+    </div>
+  </div>`);
+};
+
+window.previewPhoto = function(input) {
+  if (!input.files||!input.files[0]) return;
+  pendingPhoto = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    const box = document.getElementById('photo-box');
+    if (box) {
+      let img = box.querySelector('img');
+      if (!img) { img = document.createElement('img'); box.appendChild(img); }
+      img.src = e.target.result;
+      box.classList.add('has-img');
+    }
+  };
+  reader.readAsDataURL(pendingPhoto);
+};
+
+window.confirmVisit = async function(id) {
+  const memo = document.getElementById('mv-memo')?.value || '';
+  const p = PLACES.find(x=>x.id===id);
+  const d = new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'});
+  if (!state.visited) state.visited = {};
+  closeModal();
+  showToast('저장 중이에요... 잠깐만요 🧡');
+  let photoURL = null;
+  if (pendingPhoto) {
+    try {
+      const fd = new FormData();
+      fd.append('file', pendingPhoto);
+      fd.append('upload_preset', CLOUDINARY_PRESET);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`, {method:'POST', body:fd});
+      const data = await res.json();
+      photoURL = data.secure_url || null;
+    } catch(e) {
+      console.error('사진 업로드 오류:', e);
+      showToast('사진 업로드에 실패했어요. 기록은 저장돼요!');
+    }
+  }
+  state.visited[id] = {date:d, memo:memo||`${p.name}에 다녀왔어요!`, photo: photoURL};
+  state.points = (state.points||0) + 10;
+  pendingPhoto = null;
+  checkCoupons();
+  await saveToFirebase();
+  showPtPopup(10);
+};
+
+function checkCoupons() {
+  if (!Array.isArray(state.coupons)) state.coupons = [];
+  const pts = state.points || 0;
+  COUPON_MILESTONES.forEach(m => {
+    if (pts >= m) {
+      const already = state.coupons.filter(c => c.milestone === m).length;
+      const should = Math.floor(pts / m);
+      for (let i = already; i < should && i < 1; i++) {
+        state.coupons.push({milestone:m, wish:'', used:false, earned:new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'})});
+      }
+    }
+  });
+}
+
+function showPtPopup(pts) {
+  showModal(`<div class="modal" style="text-align:center;">
+    <div style="font-size:36px;margin-bottom:10px;">🌟</div>
+    <div style="font-size:22px;font-weight:700;color:var(--brand);margin-bottom:6px;">+${pts}pt 적립!</div>
+    <div style="font-size:17px;color:var(--text2);margin-bottom:18px;">수고하셨어요!<br>은호도 마음으로 함께해요 🧡</div>
+    <button class="btn-ok" style="width:100%" onclick="closeModal()">감사해요!</button>
+  </div>`);
+}
+
+// ── 기록 탭 ────────────────────────────────────────────
+function renderLog() {
+  const visited = Object.entries(state.visited||{});
+  const el = document.getElementById('log-list');
+  const sg = document.getElementById('stat-grid');
+  const coupons = Array.isArray(state.coupons) ? state.coupons : [];
+  sg.innerHTML = `
+    <div class="stat-card"><div class="stat-val">${visited.length}</div><div class="stat-lbl">방문한 유산</div></div>
+    <div class="stat-card"><div class="stat-val">${state.points||0}pt</div><div class="stat-lbl">모은 포인트</div></div>
+    <div class="stat-card"><div class="stat-val">${coupons.length}장</div><div class="stat-lbl">받은 쿠폰</div></div>
+    <div class="stat-card"><div class="stat-val">${Math.round((visited.length/PLACES.length)*100)}%</div><div class="stat-lbl">전국 달성률</div></div>
+  `;
+  if (!visited.length) { el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:17px;padding:28px 0;">아직 방문 기록이 없어요.<br>코스 탭에서 방문 완료를 눌러 보세요!</div>'; return; }
+  el.innerHTML = visited.map(([id,v])=>{
+    const p = PLACES.find(x=>x.id==id)||{emoji:'📍',name:'유산'};
+    const cmts = ((state.comments||{})[id]||[]).map(c=>`<div class="comment"><div class="comment-who">${c.name}</div><div class="comment-text">${c.text}</div></div>`).join('');
+    const photoEl = v.photo ? `<img src="${v.photo}" class="log-photo" alt="${p.name} 방문 사진"/>` : '';
+    return `<div class="log-row">
+      <div class="log-ico">${p.emoji}</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="log-name">${p.name}</div>
+          <div class="log-date">${v.date}</div>
+        </div>
+        <div class="log-note">${v.memo}</div>
+        ${photoEl}
+        ${cmts}
+        <button class="add-comment-btn" onclick="openAddComment(${id})"><i class="ti ti-message-circle" style="font-size:14px"></i> 댓글 달기</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.openAddComment = function(id) {
+  showModal(`<div class="modal">
+    <div class="modal-title">💬 댓글 달기</div>
+    <input type="text" id="cmt-name" placeholder="이름 (예: 은호)"/>
+    <textarea id="cmt-text" placeholder="한 줄 응원 메시지"></textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-ok" onclick="addComment(${id})">등록</button>
+    </div>
+  </div>`);
+};
+
+window.addComment = async function(id) {
+  const name = document.getElementById('cmt-name')?.value.trim();
+  const text = document.getElementById('cmt-text')?.value.trim();
+  if (!name||!text) { showToast('이름과 댓글을 입력해 주세요!'); return; }
+  if (!state.comments) state.comments = {};
+  if (!state.comments[id]) state.comments[id] = [];
+  state.comments[id].push({name, text});
+  closeModal();
+  await saveToFirebase();
+};
+
+// ── 소원쿠폰 ───────────────────────────────────────────
+function renderCoupon() {
+  const coupons = Array.isArray(state.coupons) ? state.coupons : [];
+  const el = document.getElementById('coupon-list');
+  if (!coupons.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:17px;padding:20px 0;">아직 쿠폰이 없어요.<br>50pt를 모으면 소원을 적을 수 있어요 🎁</div>';
+    return;
+  }
+  el.innerHTML = coupons.map((c,i)=>`
+    <div class="coupon${c.used?' used':''}">
+      <div class="coupon-icon">${c.used?'✅':'🎁'}</div>
+      <div style="flex:1;">
+        <div class="coupon-name">소원쿠폰 #${i+1}</div>
+        <div class="coupon-desc">${c.wish || '(소원을 아직 적지 않았어요)'}</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:4px;">${c.earned} 발행</div>
+        <div class="coupon-actions">
+          ${!c.wish && !c.used ? `<button class="btn-use" onclick="editWish(${i})">✏️ 소원 적기</button>` : ''}
+          ${c.wish && !c.used ? `<button class="btn-use" onclick="useCoupon(${i})">사용하기</button>` : ''}
+          ${c.wish ? `<button class="btn-share" onclick="shareCoupon(${i})"><i class="ti ti-share"></i> 은호에게 공유</button>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+window.openNewCoupon = function() {
+  const pts = state.points || 0;
+  const coupons = Array.isArray(state.coupons) ? state.coupons : [];
+  const unusedBlank = coupons.find(c => !c.wish && !c.used);
+  if (unusedBlank) {
+    showToast('아직 소원을 적지 않은 쿠폰이 있어요!');
+    go('coupon');
+    return;
+  }
+  if (pts < 50) {
+    showModal(`<div class="modal" style="text-align:center;">
+      <div style="font-size:32px;margin-bottom:10px;">🎁</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px;">포인트가 부족해요</div>
+      <div style="font-size:16px;color:var(--text2);margin-bottom:18px;">소원쿠폰은 50pt마다 발행돼요.<br>지금은 ${pts}pt예요.</div>
+      <button class="btn-ok" style="width:100%" onclick="closeModal()">알겠어요</button>
+    </div>`);
+    return;
+  }
+  const earned = coupons.filter(c => c.milestone).length;
+  const canHave = Math.floor(pts / 50);
+  if (earned >= canHave) {
+    showToast('포인트에 맞는 쿠폰을 이미 모두 발행했어요!');
+    return;
+  }
+  if (!Array.isArray(state.coupons)) state.coupons = [];
+  state.coupons.push({milestone:50*canHave, wish:'', used:false, earned:new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'})});
+  saveToFirebase();
+  showToast('새 소원쿠폰이 생겼어요! 소원을 적어보세요 🎁');
+  go('coupon');
+};
+
+window.editWish = function(i) {
+  showModal(`<div class="modal">
+    <div class="modal-title">🎁 소원 적기</div>
+    <div style="font-size:15px;color:var(--text2);margin-bottom:10px;">은호에게 부탁하고 싶은 소원을 적어보세요!</div>
+    <textarea id="wish-text" placeholder="예) 삼겹살 사줘, 같이 여행 가자, 안마해줘...">${state.coupons[i].wish||''}</textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-ok" onclick="saveWish(${i})">저장</button>
+    </div>
+  </div>`);
+};
+
+window.saveWish = async function(i) {
+  const wish = document.getElementById('wish-text')?.value.trim();
+  if (!wish) { showToast('소원을 입력해 주세요!'); return; }
+  state.coupons[i].wish = wish;
+  closeModal();
+  await saveToFirebase();
+  showToast('소원이 저장됐어요! 은호에게 공유해보세요 🧡');
+};
+
+window.useCoupon = async function(i) {
+  showModal(`<div class="modal" style="text-align:center;">
+    <div style="font-size:32px;margin-bottom:10px;">🎁</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px;">${state.coupons[i].wish}</div>
+    <div style="font-size:16px;color:var(--text2);margin-bottom:18px;">이 소원쿠폰을 사용하시겠어요?</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-ok" onclick="confirmUseCoupon(${i})">사용할게요!</button>
+    </div>
+  </div>`);
+};
+
+window.confirmUseCoupon = async function(i) {
+  state.coupons[i].used = true;
+  closeModal();
+  await saveToFirebase();
+};
+
+window.shareCoupon = function(i) {
+  const c = state.coupons[i];
+  const text = `🧡 엄마아빠 답사일기 소원쿠폰 🎁\n\n소원: ${c.wish}\n\n열심히 문화유산 답사하고 모은 소원쿠폰이에요!\n은호야, 꼭 들어줘~ 😊`;
+  if (navigator.share) {
+    navigator.share({ title: '소원쿠폰', text }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(text).then(()=>showToast('쿠폰 내용이 복사됐어요! 카톡으로 붙여넣어 보세요 🧡'));
+  }
+};
+
+// ── AI 해설 (미리 쓴 설명) ──────────────────────────────
+window.showPlaceDesc = function() {
+  const selVal = document.getElementById('ai-sel').value;
+  const out = document.getElementById('ai-out');
+  const speakBtn = document.getElementById('speak-btn');
+  const place = PLACES.find(p => p.name === selVal);
+  if (place) {
+    lastAIText = place.desc;
+    out.innerHTML = place.desc;
+    speakBtn.style.display = 'inline-flex';
+  } else {
+    out.innerHTML = '<span style="color:var(--text3);font-size:17px;">유산을 고르면 은호가 설명해드려요 😊</span>';
+    speakBtn.style.display = 'none';
+  }
+};
+
+window.askAI = function() {
+  const selVal = document.getElementById('ai-sel').value;
+  const place = PLACES.find(p => p.name === selVal);
+  if (!selVal) { showToast('먼저 유산을 선택해 주세요!'); return; }
+  if (place) {
+    lastAIText = place.desc;
+    document.getElementById('ai-out').innerHTML = place.desc;
+    document.getElementById('speak-btn').style.display = 'inline-flex';
+    document.getElementById('ai-inp').value = '';
+  }
+};
+
+
+// ── TTS 음성 읽기 ──────────────────────────────────────
+window.speakResult = function() {
+  if (!lastAIText) return;
+  if (speaking) { speechSynthesis.cancel(); speaking = false; document.getElementById('speak-btn').innerHTML='<i class="ti ti-volume"></i> 음성으로 듣기'; return; }
+  const clean = lastAIText.replace(/<[^>]+>/g,'').replace(/[🌟🎁✅🪷🌸📚⛵⚓🌊🍵🎋🌿🗿🏛️🏰👑🏯🌋🕳️⛰️🌅🏺🏘️🎭🧱🌙📖📜🎓🏞️🌲🌄🗼🪨🍃⚱️🛕]/gu,'');
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang = 'ko-KR';
+  utt.rate = 0.9;
+  utt.onend = () => { speaking = false; document.getElementById('speak-btn').innerHTML='<i class="ti ti-volume"></i> 음성으로 듣기'; };
+  speechSynthesis.speak(utt);
+  speaking = true;
+  document.getElementById('speak-btn').innerHTML='<i class="ti ti-player-stop"></i> 멈추기';
+};
+
+window.openAIfor = function(id) {
+  const p = PLACES.find(x=>x.id===id);
+  go('ai');
+  const sel = document.getElementById('ai-sel');
+  for (let o of sel.options) { if (o.value===p.name) { sel.value=p.name; break; } }
+  showPlaceDesc();
+};
+
+document.getElementById('ai-inp').addEventListener('keydown', e => { if(e.key==='Enter') askAI(); });
+
+// AI select 초기화
+function initAISel() {
+  const sel = document.getElementById('ai-sel');
+  PLACES.forEach(p => { const o = document.createElement('option'); o.value=p.name; o.textContent = p.bac ? '🏔️ ' + p.name : p.name; sel.appendChild(o); });
+}
+
+// ── 모달 & 토스트 ──────────────────────────────────────
+function showModal(html) {
+  const a = document.getElementById('modal-area');
+  a.innerHTML = `<div class="modal-bg" onclick="handleBgClick(event)">${html}</div>`;
+}
+window.closeModal = function() { document.getElementById('modal-area').innerHTML=''; pendingPhoto=null; };
+window.handleBgClick = function(e) { if (e.target.classList.contains('modal-bg')) closeModal(); };
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ── 초기화 ─────────────────────────────────────────────
+renderFilters();
+initAISel();
+renderAll();
+
+// ── Service Worker 등록 ────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>

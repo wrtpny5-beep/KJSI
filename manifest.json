@@ -1,0 +1,16 @@
+{
+  "name": "정심씨와 세일씨의 즐거운 답사일기",
+  "short_name": "답사일기",
+  "description": "은호도 마음으로 함께해요",
+  "start_url": "/KJSI/",
+  "scope": "/KJSI/",
+  "display": "standalone",
+  "background_color": "#FAF0EB",
+  "theme_color": "#B85C38",
+  "orientation": "portrait",
+  "lang": "ko",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
