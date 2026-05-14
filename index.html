@@ -632,7 +632,9 @@ window.askAI = async function() {
       })
     });
     const data = await res.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '답변을 가져오지 못했어요.';
+    console.log('Gemini 응답:', JSON.stringify(data));
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || data.error?.message || '답변을 가져오지 못했어요. (오류: '+JSON.stringify(data.error)+')';
+
     lastAIText = text;
     out.innerHTML = text.replace(/\n/g,'<br>');
     speakBtn.style.display = 'inline-flex';
