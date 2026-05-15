@@ -350,49 +350,29 @@ onSnapshot(docRef, snap => {
 
 // ── 데이터 마이그레이션 (id → name 키 변환) ────────────────
 async function migrateVisitedKeys() {
-  if (!state.visited) return;
-  let needsMigration = false;
-  const newVisited = {};
-  const newComments = {};
+  // 기존 데이터 강제 초기화 후 올바른 데이터로 세팅
+  const hasOldData = state.visited && Object.keys(state.visited).some(k => !isNaN(k));
+  const hasWrongData = state.visited && (
+    state.visited['명옥헌'] || state.visited['고창 고인돌'] || state.visited['정읍 전봉준 유적']
+  );
 
-  // 실제 방문 기록 기준 하드코딩 매핑
-  const ID_TO_NAME = {
-    '1': '소쇄원',
-    '2': '무위사',
-    '4': '다산초당',
-    '8': '연곡사',
-  };
+  if (hasOldData || hasWrongData) {
+    // 소쇄원 댓글은 유지
+    const sochwaeComments = (state.comments && (state.comments['소쇄원'] || state.comments['1'])) || null;
 
-  for (const key of Object.keys(state.visited)) {
-    if (!isNaN(key)) {
-      needsMigration = true;
-      // 하드코딩 매핑 먼저 확인
-      const name = ID_TO_NAME[key] || (PLACES.find(x => x.id == parseInt(key)) || {}).name;
-      if (name) {
-        newVisited[name] = state.visited[key];
-        // memo도 장소명으로 교정
-        if (newVisited[name].memo && newVisited[name].memo.includes('에 다녀왔어요')) {
-          newVisited[name] = {...newVisited[name], memo: `${name}에 다녀왔어요!`};
-        }
-        if (state.comments && state.comments[key]) {
-          newComments[name] = state.comments[key];
-        }
-      }
-    } else {
-      newVisited[key] = state.visited[key];
-      if (state.comments && state.comments[key]) {
-        newComments[key] = state.comments[key];
-      }
-    }
-  }
+    // visited 완전 초기화 후 정확한 4곳만 세팅
+    state.visited = {
+      '소쇄원': { date: '5월 14일', memo: '담양 소쇄원에 다녀왔어요!', photo: null },
+      '무위사':  { date: '5월 15일', memo: '무위사에 다녀왔어요!', photo: null },
+      '다산초당': { date: '5월 15일', memo: '다산초당에 다녀왔어요!', photo: null },
+      '연곡사':  { date: '5월 15일', memo: '연곡사에 다녀왔어요!', photo: null },
+    };
+    state.points = 40;
+    state.comments = {};
+    if (sochwaeComments) state.comments['소쇄원'] = sochwaeComments;
 
-  if (needsMigration) {
-    state.visited = newVisited;
-    if (Object.keys(newComments).length > 0) {
-      state.comments = {...(state.comments||{}), ...newComments};
-    }
     await saveToFirebase();
-    showToast('방문 기록이 업데이트됐어요 🧡');
+    showToast('방문 기록을 정리했어요 🧡');
   }
 }
 
