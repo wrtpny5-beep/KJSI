@@ -341,9 +341,51 @@ onSnapshot(docRef, snap => {
   if (snap.exists()) {
     const remote = snap.data();
     state = {...state, ...remote};
+    migrateVisitedKeys().then(() => renderAll());
+  } else {
     renderAll();
   }
 });
+
+
+// ── 데이터 마이그레이션 (id → name 키 변환) ────────────────
+async function migrateVisitedKeys() {
+  if (!state.visited) return;
+  let needsMigration = false;
+  const newVisited = {};
+  const newComments = {};
+
+  for (const key of Object.keys(state.visited)) {
+    // 숫자 키면 옛날 id 기반 → 마이그레이션 필요
+    if (!isNaN(key)) {
+      needsMigration = true;
+      const p = PLACES.find(x => x.id == parseInt(key));
+      if (p) {
+        newVisited[p.name] = state.visited[key];
+        // comments도 같이 이전
+        if (state.comments && state.comments[key]) {
+          newComments[p.name] = state.comments[key];
+        }
+      }
+    } else {
+      // 이미 name 기반이면 그대로
+      newVisited[key] = state.visited[key];
+      if (state.comments && state.comments[key]) {
+        newComments[key] = state.comments[key];
+      }
+    }
+  }
+
+  if (needsMigration) {
+    state.visited = newVisited;
+    if (Object.keys(newComments).length > 0) {
+      state.comments = {...(state.comments||{}), ...newComments};
+    }
+    await saveToFirebase();
+    console.log('마이그레이션 완료:', newVisited);
+    showToast('방문 기록을 최신 형식으로 업데이트했어요 🧡');
+  }
+}
 
 async function saveToFirebase() {
   try {
@@ -357,8 +399,8 @@ async function saveToFirebase() {
 
 function updateBACProgress() {
   const total = PLACES.filter(p=>p.bac).length;
-  const done = Object.keys(state.visited||{}).filter(id => {
-    const p = PLACES.find(x=>x.id==id);
+  const done = Object.keys(state.visited||{}).filter(name => {
+    const p = PLACES.find(x=>x.name===name);
     return p && p.bac;
   }).length;
   const el = document.getElementById('bac-count');
@@ -416,7 +458,7 @@ function renderPlaces() {
   const el = document.getElementById('place-list');
   const list = PLACES.filter(p => activeArea==='전체' || p.area===activeArea).sort((a,b) => activeArea==='전체' ? a.dist-b.dist : a.name.localeCompare(b.name,'ko'));
   el.innerHTML = list.map(p => {
-    const v = (state.visited||{})[p.id];
+    const v = (state.visited||{})[p.name];
     return `<div class="place-card">
       <div class="pc-top">
         <div class="pc-emoji">${p.emoji}</div>
@@ -507,7 +549,7 @@ window.confirmVisit = async function(id) {
       showToast('사진 업로드에 실패했어요. 기록은 저장돼요!');
     }
   }
-  state.visited[id] = {date:d, memo:memo||`${p.name}에 다녀왔어요!`, photo: photoURL};
+  state.visited[p.name] = {date:d, memo:memo||`${p.name}에 다녀왔어요!`, photo: photoURL};
   state.points = (state.points||0) + 10;
   pendingPhoto = null;
   checkCoupons();
@@ -552,7 +594,7 @@ function renderLog() {
   `;
   if (!visited.length) { el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:17px;padding:28px 0;">아직 방문 기록이 없어요.<br>코스 탭에서 방문 완료를 눌러 보세요!</div>'; return; }
   el.innerHTML = visited.map(([id,v])=>{
-    const p = PLACES.find(x=>x.id==id)||{emoji:'📍',name:'유산'};
+    const p = PLACES.find(x=>x.name===id)||{emoji:'📍',name:id};
     const cmts = ((state.comments||{})[id]||[]).map(c=>`<div class="comment"><div class="comment-who">${c.name}</div><div class="comment-text">${c.text}</div></div>`).join('');
     const photoEl = v.photo ? `<img src="${v.photo}" class="log-photo" alt="${p.name} 방문 사진"/>` : '';
     return `<div class="log-row">
@@ -565,7 +607,7 @@ function renderLog() {
         <div class="log-note">${v.memo}</div>
         ${photoEl}
         ${cmts}
-        <button class="add-comment-btn" onclick="openAddComment(${id})"><i class="ti ti-message-circle" style="font-size:14px"></i> 댓글 달기</button>
+        <button class="add-comment-btn" onclick="openAddComment('${id}')"><i class="ti ti-message-circle" style="font-size:14px"></i> 댓글 달기</button>
       </div>
     </div>`;
   }).join('');
