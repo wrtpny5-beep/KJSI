@@ -414,7 +414,7 @@ window.setArea = function(a) { activeArea = a; renderFilters(); renderPlaces(); 
 
 function renderPlaces() {
   const el = document.getElementById('place-list');
-  const list = PLACES.filter(p => activeArea==='전체' || p.area===activeArea).sort((a,b) => a.dist-b.dist);
+  const list = PLACES.filter(p => activeArea==='전체' || p.area===activeArea).sort((a,b) => activeArea==='전체' ? a.dist-b.dist : a.name.localeCompare(b.name,'ko'));
   el.innerHTML = list.map(p => {
     const v = (state.visited||{})[p.id];
     return `<div class="place-card">
