@@ -1,4 +1,4 @@
-const CACHE = 'dapsalog-v5';
+const CACHE = 'dapsalog-v7';
 const ASSETS = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
